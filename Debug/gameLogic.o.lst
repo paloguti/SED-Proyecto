@@ -1,0 +1,615 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"gameLogic.c"
+  21              	.Ltext0:
+  22              		.file 1 "../gameLogic.c"
+ 2608              		.align	2
+ 2609              		.global	comprobarFinDelJuego
+ 2611              	comprobarFinDelJuego:
+ 2612              	.LFB0:
+   1:../gameLogic.c **** #include "gameLogic.h"
+   2:../gameLogic.c **** 
+   3:../gameLogic.c **** /*
+   4:../gameLogic.c ****  * MÓDULO EN EL QUE SE DEFINEN LAS REGLAS DEL JUEGO 3 EN RAYA
+   5:../gameLogic.c ****  */
+   6:../gameLogic.c **** 
+   7:../gameLogic.c **** extern int tablero[];
+   8:../gameLogic.c **** extern const int NCOL;
+   9:../gameLogic.c **** 
+  10:../gameLogic.c **** /*
+  11:../gameLogic.c ****  * Función que devuelve:
+  12:../gameLogic.c ****  * 0 si NO ha acabado el juego
+  13:../gameLogic.c ****  * 1 si ha ganado el jugador 1
+  14:../gameLogic.c ****  * 2 si ha ganado el jugador 2
+  15:../gameLogic.c ****  * 3 si han quedado empate
+  16:../gameLogic.c ****  */
+  17:../gameLogic.c **** int comprobarFinDelJuego(){
+ 2613              		.loc 1 17 0
+ 2614              		.cfi_startproc
+ 2615              		@ Function supports interworking.
+ 2616              		@ args = 0, pretend = 0, frame = 24
+ 2617              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2618 0000 0DC0A0E1 		mov	ip, sp
+ 2619              	.LCFI0:
+ 2620              		.cfi_def_cfa_register 12
+ 2621 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2622 0008 04B04CE2 		sub	fp, ip, #4
+ 2623              		.cfi_offset 14, -8
+ 2624              		.cfi_offset 13, -12
+ 2625              		.cfi_offset 11, -16
+ 2626              	.LCFI1:
+ 2627              		.cfi_def_cfa 11, 4
+ 2628 000c 18D04DE2 		sub	sp, sp, #24
+  18:../gameLogic.c **** 	int fin = 0; // fin = 0 significa que no ha acabado el juego
+ 2629              		.loc 1 18 0
+ 2630 0010 0030A0E3 		mov	r3, #0
+ 2631 0014 10300BE5 		str	r3, [fp, #-16]
+  19:../gameLogic.c **** 	int lleno = 0; //lleno = 0 significa que aún hay sitios vacíos
+ 2632              		.loc 1 19 0
+ 2633 0018 0030A0E3 		mov	r3, #0
+ 2634 001c 14300BE5 		str	r3, [fp, #-20]
+  20:../gameLogic.c **** 	//Primero comprobamos si el tablero está lleno
+  21:../gameLogic.c **** 	int i;
+  22:../gameLogic.c **** 	int cont = 0;
+ 2635              		.loc 1 22 0
+ 2636 0020 0030A0E3 		mov	r3, #0
+ 2637 0024 1C300BE5 		str	r3, [fp, #-28]
+  23:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i++ ){
+ 2638              		.loc 1 23 0
+ 2639 0028 0030A0E3 		mov	r3, #0
+ 2640 002c 18300BE5 		str	r3, [fp, #-24]
+ 2641 0030 0A0000EA 		b	.L2
+ 2642              	.L4:
+  24:../gameLogic.c **** 		if(tablero[i] != 0){
+ 2643              		.loc 1 24 0
+ 2644 0034 C8309FE5 		ldr	r3, .L9
+ 2645 0038 18201BE5 		ldr	r2, [fp, #-24]
+ 2646 003c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2647 0040 000053E3 		cmp	r3, #0
+ 2648 0044 0200000A 		beq	.L3
+  25:../gameLogic.c **** 			cont = cont + 1;
+ 2649              		.loc 1 25 0
+ 2650 0048 1C301BE5 		ldr	r3, [fp, #-28]
+ 2651 004c 013083E2 		add	r3, r3, #1
+ 2652 0050 1C300BE5 		str	r3, [fp, #-28]
+ 2653              	.L3:
+  23:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i++ ){
+ 2654              		.loc 1 23 0
+ 2655 0054 18301BE5 		ldr	r3, [fp, #-24]
+ 2656 0058 013083E2 		add	r3, r3, #1
+ 2657 005c 18300BE5 		str	r3, [fp, #-24]
+ 2658              	.L2:
+  23:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i++ ){
+ 2659              		.loc 1 23 0 is_stmt 0 discriminator 1
+ 2660 0060 A0309FE5 		ldr	r3, .L9+4
+ 2661 0064 003093E5 		ldr	r3, [r3, #0]
+ 2662 0068 98209FE5 		ldr	r2, .L9+4
+ 2663 006c 002092E5 		ldr	r2, [r2, #0]
+ 2664 0070 930202E0 		mul	r2, r3, r2
+ 2665 0074 18301BE5 		ldr	r3, [fp, #-24]
+ 2666 0078 030052E1 		cmp	r2, r3
+ 2667 007c ECFFFFCA 		bgt	.L4
+  26:../gameLogic.c **** 		}
+  27:../gameLogic.c **** 	}
+  28:../gameLogic.c **** 	if(cont == NCOL*NCOL){
+ 2668              		.loc 1 28 0 is_stmt 1
+ 2669 0080 80309FE5 		ldr	r3, .L9+4
+ 2670 0084 003093E5 		ldr	r3, [r3, #0]
+ 2671 0088 78209FE5 		ldr	r2, .L9+4
+ 2672 008c 002092E5 		ldr	r2, [r2, #0]
+ 2673 0090 930202E0 		mul	r2, r3, r2
+ 2674 0094 1C301BE5 		ldr	r3, [fp, #-28]
+ 2675 0098 030052E1 		cmp	r2, r3
+ 2676 009c 0100001A 		bne	.L5
+  29:../gameLogic.c **** 		lleno = 1;
+ 2677              		.loc 1 29 0
+ 2678 00a0 0130A0E3 		mov	r3, #1
+ 2679 00a4 14300BE5 		str	r3, [fp, #-20]
+ 2680              	.L5:
+  30:../gameLogic.c **** 	}
+  31:../gameLogic.c **** 
+  32:../gameLogic.c **** 	int ganador = 0; //ganador = 0 significa que aún no hay ganador.
+ 2681              		.loc 1 32 0
+ 2682 00a8 0030A0E3 		mov	r3, #0
+ 2683 00ac 20300BE5 		str	r3, [fp, #-32]
+  33:../gameLogic.c **** 
+  34:../gameLogic.c **** 	ganador = comprobarGanador();
+ 2684              		.loc 1 34 0
+ 2685 00b0 FEFFFFEB 		bl	comprobarGanador
+ 2686 00b4 20000BE5 		str	r0, [fp, #-32]
+  35:../gameLogic.c **** 
+  36:../gameLogic.c **** 	if(ganador != 0){
+ 2687              		.loc 1 36 0
+ 2688 00b8 20301BE5 		ldr	r3, [fp, #-32]
+ 2689 00bc 000053E3 		cmp	r3, #0
+ 2690 00c0 0200000A 		beq	.L6
+  37:../gameLogic.c **** 		fin = ganador;
+ 2691              		.loc 1 37 0
+ 2692 00c4 20301BE5 		ldr	r3, [fp, #-32]
+ 2693 00c8 10300BE5 		str	r3, [fp, #-16]
+ 2694 00cc 070000EA 		b	.L7
+ 2695              	.L6:
+  38:../gameLogic.c **** 	}
+  39:../gameLogic.c **** 	else if (lleno == 1){
+ 2696              		.loc 1 39 0
+ 2697 00d0 14301BE5 		ldr	r3, [fp, #-20]
+ 2698 00d4 010053E3 		cmp	r3, #1
+ 2699 00d8 0200001A 		bne	.L8
+  40:../gameLogic.c **** 		fin = 3;
+ 2700              		.loc 1 40 0
+ 2701 00dc 0330A0E3 		mov	r3, #3
+ 2702 00e0 10300BE5 		str	r3, [fp, #-16]
+ 2703 00e4 010000EA 		b	.L7
+ 2704              	.L8:
+  41:../gameLogic.c **** 	}
+  42:../gameLogic.c **** 	else {
+  43:../gameLogic.c **** 		fin = 0;
+ 2705              		.loc 1 43 0
+ 2706 00e8 0030A0E3 		mov	r3, #0
+ 2707 00ec 10300BE5 		str	r3, [fp, #-16]
+ 2708              	.L7:
+  44:../gameLogic.c **** 	}
+  45:../gameLogic.c **** 
+  46:../gameLogic.c **** 	return fin;
+ 2709              		.loc 1 46 0
+ 2710 00f0 10301BE5 		ldr	r3, [fp, #-16]
+  47:../gameLogic.c **** }
+ 2711              		.loc 1 47 0
+ 2712 00f4 0300A0E1 		mov	r0, r3
+ 2713 00f8 0CD04BE2 		sub	sp, fp, #12
+ 2714 00fc 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2715 0100 1EFF2FE1 		bx	lr
+ 2716              	.L10:
+ 2717              		.align	2
+ 2718              	.L9:
+ 2719 0104 00000000 		.word	tablero
+ 2720 0108 00000000 		.word	NCOL
+ 2721              		.cfi_endproc
+ 2722              	.LFE0:
+ 2724              		.align	2
+ 2725              		.global	comprobarGanador
+ 2727              	comprobarGanador:
+ 2728              	.LFB1:
+  48:../gameLogic.c **** 
+  49:../gameLogic.c **** int comprobarGanador(){
+ 2729              		.loc 1 49 0
+ 2730              		.cfi_startproc
+ 2731              		@ Function supports interworking.
+ 2732              		@ args = 0, pretend = 0, frame = 40
+ 2733              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2734 010c 0DC0A0E1 		mov	ip, sp
+ 2735              	.LCFI2:
+ 2736              		.cfi_def_cfa_register 12
+ 2737 0110 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2738 0114 04B04CE2 		sub	fp, ip, #4
+ 2739              		.cfi_offset 14, -8
+ 2740              		.cfi_offset 13, -12
+ 2741              		.cfi_offset 11, -16
+ 2742              	.LCFI3:
+ 2743              		.cfi_def_cfa 11, 4
+ 2744 0118 28D04DE2 		sub	sp, sp, #40
+  50:../gameLogic.c **** 
+  51:../gameLogic.c **** 	int ganador = 0; // 0 si no hay ganador
+ 2745              		.loc 1 51 0
+ 2746 011c 0030A0E3 		mov	r3, #0
+ 2747 0120 10300BE5 		str	r3, [fp, #-16]
+  52:../gameLogic.c **** 	int fin = 0; // 0 si no ha acabado de comprobar
+ 2748              		.loc 1 52 0
+ 2749 0124 0030A0E3 		mov	r3, #0
+ 2750 0128 28300BE5 		str	r3, [fp, #-40]
+  53:../gameLogic.c **** 	int i = 0;
+ 2751              		.loc 1 53 0
+ 2752 012c 0030A0E3 		mov	r3, #0
+ 2753 0130 14300BE5 		str	r3, [fp, #-20]
+  54:../gameLogic.c **** 
+  55:../gameLogic.c **** 	//Comprobamos si hay tres en raya en alguna fila
+  56:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i += NCOL ){ //Num filas
+ 2754              		.loc 1 56 0
+ 2755 0134 0030A0E3 		mov	r3, #0
+ 2756 0138 14300BE5 		str	r3, [fp, #-20]
+ 2757 013c 290000EA 		b	.L12
+ 2758              	.L17:
+ 2759              	.LBB2:
+  57:../gameLogic.c **** 		int j = 0;
+ 2760              		.loc 1 57 0
+ 2761 0140 0030A0E3 		mov	r3, #0
+ 2762 0144 18300BE5 		str	r3, [fp, #-24]
+  58:../gameLogic.c **** 		int ant = tablero[i+j];
+ 2763              		.loc 1 58 0
+ 2764 0148 14201BE5 		ldr	r2, [fp, #-20]
+ 2765 014c 18301BE5 		ldr	r3, [fp, #-24]
+ 2766 0150 032082E0 		add	r2, r2, r3
+ 2767 0154 4C339FE5 		ldr	r3, .L35
+ 2768 0158 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2769 015c 2C300BE5 		str	r3, [fp, #-44]
+  59:../gameLogic.c **** 		if (ant != 0){
+ 2770              		.loc 1 59 0
+ 2771 0160 2C301BE5 		ldr	r3, [fp, #-44]
+ 2772 0164 000053E3 		cmp	r3, #0
+ 2773 0168 1900000A 		beq	.L13
+  60:../gameLogic.c **** 			while (ant == tablero[i+j] && j < NCOL){
+ 2774              		.loc 1 60 0
+ 2775 016c 020000EA 		b	.L14
+ 2776              	.L16:
+  61:../gameLogic.c **** 				j++;
+ 2777              		.loc 1 61 0
+ 2778 0170 18301BE5 		ldr	r3, [fp, #-24]
+ 2779 0174 013083E2 		add	r3, r3, #1
+ 2780 0178 18300BE5 		str	r3, [fp, #-24]
+ 2781              	.L14:
+  60:../gameLogic.c **** 			while (ant == tablero[i+j] && j < NCOL){
+ 2782              		.loc 1 60 0 discriminator 1
+ 2783 017c 14201BE5 		ldr	r2, [fp, #-20]
+ 2784 0180 18301BE5 		ldr	r3, [fp, #-24]
+ 2785 0184 032082E0 		add	r2, r2, r3
+ 2786 0188 18339FE5 		ldr	r3, .L35
+ 2787 018c 022193E7 		ldr	r2, [r3, r2, asl #2]
+ 2788 0190 2C301BE5 		ldr	r3, [fp, #-44]
+ 2789 0194 030052E1 		cmp	r2, r3
+ 2790 0198 0400001A 		bne	.L15
+  60:../gameLogic.c **** 			while (ant == tablero[i+j] && j < NCOL){
+ 2791              		.loc 1 60 0 is_stmt 0 discriminator 2
+ 2792 019c 08339FE5 		ldr	r3, .L35+4
+ 2793 01a0 003093E5 		ldr	r3, [r3, #0]
+ 2794 01a4 18201BE5 		ldr	r2, [fp, #-24]
+ 2795 01a8 030052E1 		cmp	r2, r3
+ 2796 01ac EFFFFFBA 		blt	.L16
+ 2797              	.L15:
+  62:../gameLogic.c **** 			}
+  63:../gameLogic.c **** 			if (j == NCOL){
+ 2798              		.loc 1 63 0 is_stmt 1
+ 2799 01b0 F4329FE5 		ldr	r3, .L35+4
+ 2800 01b4 003093E5 		ldr	r3, [r3, #0]
+ 2801 01b8 18201BE5 		ldr	r2, [fp, #-24]
+ 2802 01bc 030052E1 		cmp	r2, r3
+ 2803 01c0 0300001A 		bne	.L13
+  64:../gameLogic.c **** 				ganador = tablero[i];
+ 2804              		.loc 1 64 0
+ 2805 01c4 DC329FE5 		ldr	r3, .L35
+ 2806 01c8 14201BE5 		ldr	r2, [fp, #-20]
+ 2807 01cc 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2808 01d0 10300BE5 		str	r3, [fp, #-16]
+ 2809              	.L13:
+ 2810              	.LBE2:
+  56:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i += NCOL ){ //Num filas
+ 2811              		.loc 1 56 0
+ 2812 01d4 D0329FE5 		ldr	r3, .L35+4
+ 2813 01d8 003093E5 		ldr	r3, [r3, #0]
+ 2814 01dc 14201BE5 		ldr	r2, [fp, #-20]
+ 2815 01e0 033082E0 		add	r3, r2, r3
+ 2816 01e4 14300BE5 		str	r3, [fp, #-20]
+ 2817              	.L12:
+  56:../gameLogic.c **** 	for(i = 0; i < NCOL*NCOL; i += NCOL ){ //Num filas
+ 2818              		.loc 1 56 0 is_stmt 0 discriminator 1
+ 2819 01e8 BC329FE5 		ldr	r3, .L35+4
+ 2820 01ec 003093E5 		ldr	r3, [r3, #0]
+ 2821 01f0 B4229FE5 		ldr	r2, .L35+4
+ 2822 01f4 002092E5 		ldr	r2, [r2, #0]
+ 2823 01f8 930202E0 		mul	r2, r3, r2
+ 2824 01fc 14301BE5 		ldr	r3, [fp, #-20]
+ 2825 0200 030052E1 		cmp	r2, r3
+ 2826 0204 CDFFFFCA 		bgt	.L17
+  65:../gameLogic.c **** 			}
+  66:../gameLogic.c **** 		}
+  67:../gameLogic.c **** 	}
+  68:../gameLogic.c **** 	// Comprobamos las columnas
+  69:../gameLogic.c **** 	if (ganador == 0){
+ 2827              		.loc 1 69 0 is_stmt 1
+ 2828 0208 10301BE5 		ldr	r3, [fp, #-16]
+ 2829 020c 000053E3 		cmp	r3, #0
+ 2830 0210 3700001A 		bne	.L18
+  70:../gameLogic.c **** 		for (i = 0; i < NCOL; i++){
+ 2831              		.loc 1 70 0
+ 2832 0214 0030A0E3 		mov	r3, #0
+ 2833 0218 14300BE5 		str	r3, [fp, #-20]
+ 2834 021c 2F0000EA 		b	.L19
+ 2835              	.L24:
+ 2836              	.LBB3:
+  71:../gameLogic.c **** 			int j = 0;
+ 2837              		.loc 1 71 0
+ 2838 0220 0030A0E3 		mov	r3, #0
+ 2839 0224 1C300BE5 		str	r3, [fp, #-28]
+  72:../gameLogic.c **** 			int ant = tablero[i+j];
+ 2840              		.loc 1 72 0
+ 2841 0228 14201BE5 		ldr	r2, [fp, #-20]
+ 2842 022c 1C301BE5 		ldr	r3, [fp, #-28]
+ 2843 0230 032082E0 		add	r2, r2, r3
+ 2844 0234 6C329FE5 		ldr	r3, .L35
+ 2845 0238 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2846 023c 30300BE5 		str	r3, [fp, #-48]
+  73:../gameLogic.c **** 			if (ant != 0){
+ 2847              		.loc 1 73 0
+ 2848 0240 30301BE5 		ldr	r3, [fp, #-48]
+ 2849 0244 000053E3 		cmp	r3, #0
+ 2850 0248 2100000A 		beq	.L20
+  74:../gameLogic.c **** 				while(ant == tablero[i+j] && j < NCOL*NCOL){
+ 2851              		.loc 1 74 0
+ 2852 024c 040000EA 		b	.L21
+ 2853              	.L23:
+  75:../gameLogic.c **** 					j += NCOL;
+ 2854              		.loc 1 75 0
+ 2855 0250 54329FE5 		ldr	r3, .L35+4
+ 2856 0254 003093E5 		ldr	r3, [r3, #0]
+ 2857 0258 1C201BE5 		ldr	r2, [fp, #-28]
+ 2858 025c 033082E0 		add	r3, r2, r3
+ 2859 0260 1C300BE5 		str	r3, [fp, #-28]
+ 2860              	.L21:
+  74:../gameLogic.c **** 				while(ant == tablero[i+j] && j < NCOL*NCOL){
+ 2861              		.loc 1 74 0 discriminator 1
+ 2862 0264 14201BE5 		ldr	r2, [fp, #-20]
+ 2863 0268 1C301BE5 		ldr	r3, [fp, #-28]
+ 2864 026c 032082E0 		add	r2, r2, r3
+ 2865 0270 30329FE5 		ldr	r3, .L35
+ 2866 0274 022193E7 		ldr	r2, [r3, r2, asl #2]
+ 2867 0278 30301BE5 		ldr	r3, [fp, #-48]
+ 2868 027c 030052E1 		cmp	r2, r3
+ 2869 0280 0700001A 		bne	.L22
+  74:../gameLogic.c **** 				while(ant == tablero[i+j] && j < NCOL*NCOL){
+ 2870              		.loc 1 74 0 is_stmt 0 discriminator 2
+ 2871 0284 20329FE5 		ldr	r3, .L35+4
+ 2872 0288 003093E5 		ldr	r3, [r3, #0]
+ 2873 028c 18229FE5 		ldr	r2, .L35+4
+ 2874 0290 002092E5 		ldr	r2, [r2, #0]
+ 2875 0294 930202E0 		mul	r2, r3, r2
+ 2876 0298 1C301BE5 		ldr	r3, [fp, #-28]
+ 2877 029c 030052E1 		cmp	r2, r3
+ 2878 02a0 EAFFFFCA 		bgt	.L23
+ 2879              	.L22:
+  76:../gameLogic.c **** 				}
+  77:../gameLogic.c **** 				if (j == NCOL*NCOL){
+ 2880              		.loc 1 77 0 is_stmt 1
+ 2881 02a4 00329FE5 		ldr	r3, .L35+4
+ 2882 02a8 003093E5 		ldr	r3, [r3, #0]
+ 2883 02ac F8219FE5 		ldr	r2, .L35+4
+ 2884 02b0 002092E5 		ldr	r2, [r2, #0]
+ 2885 02b4 930202E0 		mul	r2, r3, r2
+ 2886 02b8 1C301BE5 		ldr	r3, [fp, #-28]
+ 2887 02bc 030052E1 		cmp	r2, r3
+ 2888 02c0 0300001A 		bne	.L20
+  78:../gameLogic.c **** 					ganador = tablero[i];
+ 2889              		.loc 1 78 0
+ 2890 02c4 DC319FE5 		ldr	r3, .L35
+ 2891 02c8 14201BE5 		ldr	r2, [fp, #-20]
+ 2892 02cc 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2893 02d0 10300BE5 		str	r3, [fp, #-16]
+ 2894              	.L20:
+ 2895              	.LBE3:
+  70:../gameLogic.c **** 		for (i = 0; i < NCOL; i++){
+ 2896              		.loc 1 70 0
+ 2897 02d4 14301BE5 		ldr	r3, [fp, #-20]
+ 2898 02d8 013083E2 		add	r3, r3, #1
+ 2899 02dc 14300BE5 		str	r3, [fp, #-20]
+ 2900              	.L19:
+  70:../gameLogic.c **** 		for (i = 0; i < NCOL; i++){
+ 2901              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 2902 02e0 C4319FE5 		ldr	r3, .L35+4
+ 2903 02e4 003093E5 		ldr	r3, [r3, #0]
+ 2904 02e8 14201BE5 		ldr	r2, [fp, #-20]
+ 2905 02ec 030052E1 		cmp	r2, r3
+ 2906 02f0 CAFFFFBA 		blt	.L24
+ 2907              	.L18:
+  79:../gameLogic.c **** 				}
+  80:../gameLogic.c **** 			}
+  81:../gameLogic.c **** 		}
+  82:../gameLogic.c **** 	}
+  83:../gameLogic.c **** 
+  84:../gameLogic.c **** 	//Comprobamos las diagonales
+  85:../gameLogic.c **** 	if (ganador == 0){
+ 2908              		.loc 1 85 0 is_stmt 1
+ 2909 02f4 10301BE5 		ldr	r3, [fp, #-16]
+ 2910 02f8 000053E3 		cmp	r3, #0
+ 2911 02fc 6400001A 		bne	.L25
+ 2912              	.LBB4:
+  86:../gameLogic.c **** 		int valor = -1;
+ 2913              		.loc 1 86 0
+ 2914 0300 0030E0E3 		mvn	r3, #0
+ 2915 0304 20300BE5 		str	r3, [fp, #-32]
+  87:../gameLogic.c **** 		int contador = 0;
+ 2916              		.loc 1 87 0
+ 2917 0308 0030A0E3 		mov	r3, #0
+ 2918 030c 24300BE5 		str	r3, [fp, #-36]
+  88:../gameLogic.c **** 		//primera diagonal se forma siempre (0, 1*NCOL+1, 2*NCOL+1 ... )
+  89:../gameLogic.c **** 		for(i = 0; i < NCOL; i++){
+ 2919              		.loc 1 89 0
+ 2920 0310 0030A0E3 		mov	r3, #0
+ 2921 0314 14300BE5 		str	r3, [fp, #-20]
+ 2922 0318 1D0000EA 		b	.L26
+ 2923              	.L29:
+  90:../gameLogic.c **** 			if(valor == -1){
+ 2924              		.loc 1 90 0
+ 2925 031c 20301BE5 		ldr	r3, [fp, #-32]
+ 2926 0320 010073E3 		cmn	r3, #1
+ 2927 0324 0A00001A 		bne	.L27
+  91:../gameLogic.c **** 				valor = tablero[i*(NCOL+1)];
+ 2928              		.loc 1 91 0
+ 2929 0328 7C319FE5 		ldr	r3, .L35+4
+ 2930 032c 003093E5 		ldr	r3, [r3, #0]
+ 2931 0330 013083E2 		add	r3, r3, #1
+ 2932 0334 14201BE5 		ldr	r2, [fp, #-20]
+ 2933 0338 930202E0 		mul	r2, r3, r2
+ 2934 033c 64319FE5 		ldr	r3, .L35
+ 2935 0340 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2936 0344 20300BE5 		str	r3, [fp, #-32]
+  92:../gameLogic.c **** 				contador = 1;
+ 2937              		.loc 1 92 0
+ 2938 0348 0130A0E3 		mov	r3, #1
+ 2939 034c 24300BE5 		str	r3, [fp, #-36]
+ 2940 0350 0C0000EA 		b	.L28
+ 2941              	.L27:
+  93:../gameLogic.c **** 			}
+  94:../gameLogic.c **** 			else if (valor == tablero[i*(NCOL+1)]){
+ 2942              		.loc 1 94 0
+ 2943 0354 50319FE5 		ldr	r3, .L35+4
+ 2944 0358 003093E5 		ldr	r3, [r3, #0]
+ 2945 035c 013083E2 		add	r3, r3, #1
+ 2946 0360 14201BE5 		ldr	r2, [fp, #-20]
+ 2947 0364 930202E0 		mul	r2, r3, r2
+ 2948 0368 38319FE5 		ldr	r3, .L35
+ 2949 036c 022193E7 		ldr	r2, [r3, r2, asl #2]
+ 2950 0370 20301BE5 		ldr	r3, [fp, #-32]
+ 2951 0374 030052E1 		cmp	r2, r3
+ 2952 0378 0200001A 		bne	.L28
+  95:../gameLogic.c **** 				contador++;
+ 2953              		.loc 1 95 0
+ 2954 037c 24301BE5 		ldr	r3, [fp, #-36]
+ 2955 0380 013083E2 		add	r3, r3, #1
+ 2956 0384 24300BE5 		str	r3, [fp, #-36]
+ 2957              	.L28:
+  89:../gameLogic.c **** 		for(i = 0; i < NCOL; i++){
+ 2958              		.loc 1 89 0
+ 2959 0388 14301BE5 		ldr	r3, [fp, #-20]
+ 2960 038c 013083E2 		add	r3, r3, #1
+ 2961 0390 14300BE5 		str	r3, [fp, #-20]
+ 2962              	.L26:
+  89:../gameLogic.c **** 		for(i = 0; i < NCOL; i++){
+ 2963              		.loc 1 89 0 is_stmt 0 discriminator 1
+ 2964 0394 10319FE5 		ldr	r3, .L35+4
+ 2965 0398 003093E5 		ldr	r3, [r3, #0]
+ 2966 039c 14201BE5 		ldr	r2, [fp, #-20]
+ 2967 03a0 030052E1 		cmp	r2, r3
+ 2968 03a4 DCFFFFBA 		blt	.L29
+  96:../gameLogic.c **** 			}
+  97:../gameLogic.c **** 		}
+  98:../gameLogic.c **** 		if(contador == NCOL){
+ 2969              		.loc 1 98 0 is_stmt 1
+ 2970 03a8 FC309FE5 		ldr	r3, .L35+4
+ 2971 03ac 003093E5 		ldr	r3, [r3, #0]
+ 2972 03b0 24201BE5 		ldr	r2, [fp, #-36]
+ 2973 03b4 030052E1 		cmp	r2, r3
+ 2974 03b8 0100001A 		bne	.L30
+  99:../gameLogic.c **** 			ganador = valor;
+ 2975              		.loc 1 99 0
+ 2976 03bc 20301BE5 		ldr	r3, [fp, #-32]
+ 2977 03c0 10300BE5 		str	r3, [fp, #-16]
+ 2978              	.L30:
+ 100:../gameLogic.c **** 		}
+ 101:../gameLogic.c **** 		if(ganador == 0){
+ 2979              		.loc 1 101 0
+ 2980 03c4 10301BE5 		ldr	r3, [fp, #-16]
+ 2981 03c8 000053E3 		cmp	r3, #0
+ 2982 03cc 3000001A 		bne	.L25
+ 102:../gameLogic.c **** 			valor = -1;
+ 2983              		.loc 1 102 0
+ 2984 03d0 0030E0E3 		mvn	r3, #0
+ 2985 03d4 20300BE5 		str	r3, [fp, #-32]
+ 103:../gameLogic.c **** 			contador = 0;
+ 2986              		.loc 1 103 0
+ 2987 03d8 0030A0E3 		mov	r3, #0
+ 2988 03dc 24300BE5 		str	r3, [fp, #-36]
+ 104:../gameLogic.c **** 			//segunda diagonal se forma siempre (1*NCOL-1, 2*NCOL-1, 3*NCOL ...)
+ 105:../gameLogic.c **** 			for (i = 1; i <= NCOL; i++){
+ 2989              		.loc 1 105 0
+ 2990 03e0 0130A0E3 		mov	r3, #1
+ 2991 03e4 14300BE5 		str	r3, [fp, #-20]
+ 2992 03e8 1D0000EA 		b	.L31
+ 2993              	.L34:
+ 106:../gameLogic.c **** 				if(valor == -1){
+ 2994              		.loc 1 106 0
+ 2995 03ec 20301BE5 		ldr	r3, [fp, #-32]
+ 2996 03f0 010073E3 		cmn	r3, #1
+ 2997 03f4 0A00001A 		bne	.L32
+ 107:../gameLogic.c **** 					valor = tablero[i*(NCOL-1)];
+ 2998              		.loc 1 107 0
+ 2999 03f8 AC309FE5 		ldr	r3, .L35+4
+ 3000 03fc 003093E5 		ldr	r3, [r3, #0]
+ 3001 0400 013043E2 		sub	r3, r3, #1
+ 3002 0404 14201BE5 		ldr	r2, [fp, #-20]
+ 3003 0408 930202E0 		mul	r2, r3, r2
+ 3004 040c 94309FE5 		ldr	r3, .L35
+ 3005 0410 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3006 0414 20300BE5 		str	r3, [fp, #-32]
+ 108:../gameLogic.c **** 					contador = 1;
+ 3007              		.loc 1 108 0
+ 3008 0418 0130A0E3 		mov	r3, #1
+ 3009 041c 24300BE5 		str	r3, [fp, #-36]
+ 3010 0420 0C0000EA 		b	.L33
+ 3011              	.L32:
+ 109:../gameLogic.c **** 				}
+ 110:../gameLogic.c **** 				else if( valor == tablero[i*(NCOL-1)]){
+ 3012              		.loc 1 110 0
+ 3013 0424 80309FE5 		ldr	r3, .L35+4
+ 3014 0428 003093E5 		ldr	r3, [r3, #0]
+ 3015 042c 013043E2 		sub	r3, r3, #1
+ 3016 0430 14201BE5 		ldr	r2, [fp, #-20]
+ 3017 0434 930202E0 		mul	r2, r3, r2
+ 3018 0438 68309FE5 		ldr	r3, .L35
+ 3019 043c 022193E7 		ldr	r2, [r3, r2, asl #2]
+ 3020 0440 20301BE5 		ldr	r3, [fp, #-32]
+ 3021 0444 030052E1 		cmp	r2, r3
+ 3022 0448 0200001A 		bne	.L33
+ 111:../gameLogic.c **** 					contador++;
+ 3023              		.loc 1 111 0
+ 3024 044c 24301BE5 		ldr	r3, [fp, #-36]
+ 3025 0450 013083E2 		add	r3, r3, #1
+ 3026 0454 24300BE5 		str	r3, [fp, #-36]
+ 3027              	.L33:
+ 105:../gameLogic.c **** 			for (i = 1; i <= NCOL; i++){
+ 3028              		.loc 1 105 0
+ 3029 0458 14301BE5 		ldr	r3, [fp, #-20]
+ 3030 045c 013083E2 		add	r3, r3, #1
+ 3031 0460 14300BE5 		str	r3, [fp, #-20]
+ 3032              	.L31:
+ 105:../gameLogic.c **** 			for (i = 1; i <= NCOL; i++){
+ 3033              		.loc 1 105 0 is_stmt 0 discriminator 1
+ 3034 0464 40309FE5 		ldr	r3, .L35+4
+ 3035 0468 003093E5 		ldr	r3, [r3, #0]
+ 3036 046c 14201BE5 		ldr	r2, [fp, #-20]
+ 3037 0470 030052E1 		cmp	r2, r3
+ 3038 0474 DCFFFFDA 		ble	.L34
+ 112:../gameLogic.c **** 				}
+ 113:../gameLogic.c **** 			}
+ 114:../gameLogic.c **** 			if(contador == NCOL){
+ 3039              		.loc 1 114 0 is_stmt 1
+ 3040 0478 2C309FE5 		ldr	r3, .L35+4
+ 3041 047c 003093E5 		ldr	r3, [r3, #0]
+ 3042 0480 24201BE5 		ldr	r2, [fp, #-36]
+ 3043 0484 030052E1 		cmp	r2, r3
+ 3044 0488 0100001A 		bne	.L25
+ 115:../gameLogic.c **** 				ganador = valor;
+ 3045              		.loc 1 115 0
+ 3046 048c 20301BE5 		ldr	r3, [fp, #-32]
+ 3047 0490 10300BE5 		str	r3, [fp, #-16]
+ 3048              	.L25:
+ 3049              	.LBE4:
+ 116:../gameLogic.c **** 			}
+ 117:../gameLogic.c **** 		}
+ 118:../gameLogic.c **** 	}
+ 119:../gameLogic.c **** 
+ 120:../gameLogic.c **** 	return ganador;
+ 3050              		.loc 1 120 0
+ 3051 0494 10301BE5 		ldr	r3, [fp, #-16]
+ 121:../gameLogic.c **** }
+ 3052              		.loc 1 121 0
+ 3053 0498 0300A0E1 		mov	r0, r3
+ 3054 049c 0CD04BE2 		sub	sp, fp, #12
+ 3055 04a0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3056 04a4 1EFF2FE1 		bx	lr
+ 3057              	.L36:
+ 3058              		.align	2
+ 3059              	.L35:
+ 3060 04a8 00000000 		.word	tablero
+ 3061 04ac 00000000 		.word	NCOL
+ 3062              		.cfi_endproc
+ 3063              	.LFE1:
+ 3065              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 gameLogic.c
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:2608   .text:00000000 $a
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:2611   .text:00000000 comprobarFinDelJuego
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:2727   .text:0000010c comprobarGanador
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:2719   .text:00000104 $d
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:2724   .text:0000010c $a
+C:\Users\Paloma\AppData\Local\Temp\ccItzkqT.s:3060   .text:000004a8 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+tablero
+NCOL

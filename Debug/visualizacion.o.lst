@@ -1,0 +1,735 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"visualizacion.c"
+  21              	.Ltext0:
+  22              		.file 1 "../visualizacion.c"
+ 2570              		.align	2
+ 2571              		.global	init_visualizacion
+ 2573              	init_visualizacion:
+ 2574              	.LFB0:
+   1:../visualizacion.c **** #include "visualizacion.h"
+   2:../visualizacion.c **** 
+   3:../visualizacion.c **** extern const int NCOL;
+   4:../visualizacion.c **** 
+   5:../visualizacion.c **** //TABLERO 320x240
+   6:../visualizacion.c **** // Pinta una linea al completo
+   7:../visualizacion.c **** /*	lcd_draw_hline(0,320,80,0xffffff,5);
+   8:../visualizacion.c **** lcd_draw_hline(0,320,160,0xffffff,5);
+   9:../visualizacion.c **** lcd_draw_vline(240,0,105,0xffffff,5);
+  10:../visualizacion.c **** lcd_draw_vline(240,0,210,0xffffff,5);
+  11:../visualizacion.c **** 
+  12:../visualizacion.c **** lcd_puts_x2(40,20,0xffffff,"X");
+  13:../visualizacion.c **** lcd_puts_x2(40,20,0xffffff,"X");
+  14:../visualizacion.c **** lcd_puts_x2(40,20,0xffffff,"X");*/
+  15:../visualizacion.c **** 
+  16:../visualizacion.c **** void init_visualizacion(void){
+ 2575              		.loc 1 16 0
+ 2576              		.cfi_startproc
+ 2577              		@ Function supports interworking.
+ 2578              		@ args = 0, pretend = 0, frame = 0
+ 2579              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2580 0000 0DC0A0E1 		mov	ip, sp
+ 2581              	.LCFI0:
+ 2582              		.cfi_def_cfa_register 12
+ 2583 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2584 0008 04B04CE2 		sub	fp, ip, #4
+ 2585              		.cfi_offset 14, -8
+ 2586              		.cfi_offset 13, -12
+ 2587              		.cfi_offset 11, -16
+ 2588              	.LCFI1:
+ 2589              		.cfi_def_cfa 11, 4
+  17:../visualizacion.c **** 	lcd_init();
+ 2590              		.loc 1 17 0
+ 2591 000c FEFFFFEB 		bl	lcd_init
+  18:../visualizacion.c **** 	lcd_clear();
+ 2592              		.loc 1 18 0
+ 2593 0010 FEFFFFEB 		bl	lcd_clear
+  19:../visualizacion.c **** 	//init_welcome3R();
+  20:../visualizacion.c **** 	//drawTab3x3();
+  21:../visualizacion.c **** }
+ 2594              		.loc 1 21 0
+ 2595 0014 0CD04BE2 		sub	sp, fp, #12
+ 2596 0018 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2597 001c 1EFF2FE1 		bx	lr
+ 2598              		.cfi_endproc
+ 2599              	.LFE0:
+ 2601              		.global	__aeabi_idiv
+ 2602              		.align	2
+ 2603              		.global	drawTab
+ 2605              	drawTab:
+ 2606              	.LFB1:
+  22:../visualizacion.c **** 
+  23:../visualizacion.c **** void drawTab(void){
+ 2607              		.loc 1 23 0
+ 2608              		.cfi_startproc
+ 2609              		@ Function supports interworking.
+ 2610              		@ args = 0, pretend = 0, frame = 16
+ 2611              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2612 0020 0DC0A0E1 		mov	ip, sp
+ 2613              	.LCFI2:
+ 2614              		.cfi_def_cfa_register 12
+ 2615 0024 10D82DE9 		stmfd	sp!, {r4, fp, ip, lr, pc}
+ 2616 0028 04B04CE2 		sub	fp, ip, #4
+ 2617              		.cfi_offset 14, -8
+ 2618              		.cfi_offset 13, -12
+ 2619              		.cfi_offset 11, -16
+ 2620              		.cfi_offset 4, -20
+ 2621              	.LCFI3:
+ 2622              		.cfi_def_cfa 11, 4
+ 2623 002c 1CD04DE2 		sub	sp, sp, #28
+  24:../visualizacion.c **** 	int i, j;
+  25:../visualizacion.c **** 	int nCol=NCOL;
+ 2624              		.loc 1 25 0
+ 2625 0030 F8309FE5 		ldr	r3, .L5
+ 2626 0034 003093E5 		ldr	r3, [r3, #0]
+ 2627 0038 1C300BE5 		str	r3, [fp, #-28]
+  26:../visualizacion.c **** 	int xMax=320, yMax=240;
+ 2628              		.loc 1 26 0
+ 2629 003c 053DA0E3 		mov	r3, #320
+ 2630 0040 20300BE5 		str	r3, [fp, #-32]
+ 2631 0044 F030A0E3 		mov	r3, #240
+ 2632 0048 24300BE5 		str	r3, [fp, #-36]
+  27:../visualizacion.c **** 
+  28:../visualizacion.c **** 	for (i = 1; i<nCol; i++)
+ 2633              		.loc 1 28 0
+ 2634 004c 0130A0E3 		mov	r3, #1
+ 2635 0050 18300BE5 		str	r3, [fp, #-24]
+ 2636 0054 2E0000EA 		b	.L3
+ 2637              	.L4:
+  29:../visualizacion.c **** 	{
+  30:../visualizacion.c **** 		lcd_draw_hline(0,xMax,(yMax/nCol)*i,0xffffff,5);
+ 2638              		.loc 1 30 0 discriminator 2
+ 2639 0058 20301BE5 		ldr	r3, [fp, #-32]
+ 2640 005c 0338A0E1 		mov	r3, r3, asl #16
+ 2641 0060 2348A0E1 		mov	r4, r3, lsr #16
+ 2642 0064 24001BE5 		ldr	r0, [fp, #-36]
+ 2643 0068 1C101BE5 		ldr	r1, [fp, #-28]
+ 2644 006c FEFFFFEB 		bl	__aeabi_idiv
+ 2645 0070 0030A0E1 		mov	r3, r0
+ 2646 0074 0338A0E1 		mov	r3, r3, asl #16
+ 2647 0078 2338A0E1 		mov	r3, r3, lsr #16
+ 2648 007c 18201BE5 		ldr	r2, [fp, #-24]
+ 2649 0080 0228A0E1 		mov	r2, r2, asl #16
+ 2650 0084 2228A0E1 		mov	r2, r2, lsr #16
+ 2651 0088 920303E0 		mul	r3, r2, r3
+ 2652 008c 0338A0E1 		mov	r3, r3, asl #16
+ 2653 0090 2338A0E1 		mov	r3, r3, lsr #16
+ 2654 0094 0520A0E3 		mov	r2, #5
+ 2655 0098 00208DE5 		str	r2, [sp, #0]
+ 2656 009c 0000A0E3 		mov	r0, #0
+ 2657 00a0 0410A0E1 		mov	r1, r4
+ 2658 00a4 0320A0E1 		mov	r2, r3
+ 2659 00a8 FF30A0E3 		mov	r3, #255
+ 2660 00ac FEFFFFEB 		bl	lcd_draw_hline
+  31:../visualizacion.c **** 		lcd_draw_vline(yMax,0,(xMax/nCol)*i,0xffffff,5);
+ 2661              		.loc 1 31 0 discriminator 2
+ 2662 00b0 24301BE5 		ldr	r3, [fp, #-36]
+ 2663 00b4 0338A0E1 		mov	r3, r3, asl #16
+ 2664 00b8 2348A0E1 		mov	r4, r3, lsr #16
+ 2665 00bc 20001BE5 		ldr	r0, [fp, #-32]
+ 2666 00c0 1C101BE5 		ldr	r1, [fp, #-28]
+ 2667 00c4 FEFFFFEB 		bl	__aeabi_idiv
+ 2668 00c8 0030A0E1 		mov	r3, r0
+ 2669 00cc 0338A0E1 		mov	r3, r3, asl #16
+ 2670 00d0 2338A0E1 		mov	r3, r3, lsr #16
+ 2671 00d4 18201BE5 		ldr	r2, [fp, #-24]
+ 2672 00d8 0228A0E1 		mov	r2, r2, asl #16
+ 2673 00dc 2228A0E1 		mov	r2, r2, lsr #16
+ 2674 00e0 920303E0 		mul	r3, r2, r3
+ 2675 00e4 0338A0E1 		mov	r3, r3, asl #16
+ 2676 00e8 2338A0E1 		mov	r3, r3, lsr #16
+ 2677 00ec 0520A0E3 		mov	r2, #5
+ 2678 00f0 00208DE5 		str	r2, [sp, #0]
+ 2679 00f4 0400A0E1 		mov	r0, r4
+ 2680 00f8 0010A0E3 		mov	r1, #0
+ 2681 00fc 0320A0E1 		mov	r2, r3
+ 2682 0100 FF30A0E3 		mov	r3, #255
+ 2683 0104 FEFFFFEB 		bl	lcd_draw_vline
+  28:../visualizacion.c **** 	for (i = 1; i<nCol; i++)
+ 2684              		.loc 1 28 0 discriminator 2
+ 2685 0108 18301BE5 		ldr	r3, [fp, #-24]
+ 2686 010c 013083E2 		add	r3, r3, #1
+ 2687 0110 18300BE5 		str	r3, [fp, #-24]
+ 2688              	.L3:
+  28:../visualizacion.c **** 	for (i = 1; i<nCol; i++)
+ 2689              		.loc 1 28 0 is_stmt 0 discriminator 1
+ 2690 0114 18201BE5 		ldr	r2, [fp, #-24]
+ 2691 0118 1C301BE5 		ldr	r3, [fp, #-28]
+ 2692 011c 030052E1 		cmp	r2, r3
+ 2693 0120 CCFFFFBA 		blt	.L4
+  32:../visualizacion.c **** 	}
+  33:../visualizacion.c **** }
+ 2694              		.loc 1 33 0 is_stmt 1
+ 2695 0124 10D04BE2 		sub	sp, fp, #16
+ 2696 0128 10689DE8 		ldmfd	sp, {r4, fp, sp, lr}
+ 2697 012c 1EFF2FE1 		bx	lr
+ 2698              	.L6:
+ 2699              		.align	2
+ 2700              	.L5:
+ 2701 0130 00000000 		.word	NCOL
+ 2702              		.cfi_endproc
+ 2703              	.LFE1:
+ 2705              		.section	.rodata
+ 2706              		.align	2
+ 2707              	.LC0:
+ 2708 0000 20202020 		.ascii	"     3 EN RAYA     \000"
+ 2708      20332045 
+ 2708      4E205241 
+ 2708      59412020 
+ 2708      20202000 
+ 2709              		.align	2
+ 2710              	.LC1:
+ 2711 0014 20202043 		.ascii	"   Comienza el juego!   \000"
+ 2711      6F6D6965 
+ 2711      6E7A6120 
+ 2711      656C206A 
+ 2711      7565676F 
+ 2712              		.text
+ 2713              		.align	2
+ 2714              		.global	init_welcome3R
+ 2716              	init_welcome3R:
+ 2717              	.LFB2:
+  34:../visualizacion.c **** 
+  35:../visualizacion.c **** void init_welcome3R(void){
+ 2718              		.loc 1 35 0
+ 2719              		.cfi_startproc
+ 2720              		@ Function supports interworking.
+ 2721              		@ args = 0, pretend = 0, frame = 0
+ 2722              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2723 0134 0DC0A0E1 		mov	ip, sp
+ 2724              	.LCFI4:
+ 2725              		.cfi_def_cfa_register 12
+ 2726 0138 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2727 013c 04B04CE2 		sub	fp, ip, #4
+ 2728              		.cfi_offset 14, -8
+ 2729              		.cfi_offset 13, -12
+ 2730              		.cfi_offset 11, -16
+ 2731              	.LCFI5:
+ 2732              		.cfi_def_cfa 11, 4
+  36:../visualizacion.c **** 	lcd_puts_x2( 0, 20, BLACK, "     3 EN RAYA     " );
+ 2733              		.loc 1 36 0
+ 2734 0140 0000A0E3 		mov	r0, #0
+ 2735 0144 1410A0E3 		mov	r1, #20
+ 2736 0148 0F20A0E3 		mov	r2, #15
+ 2737 014c 20309FE5 		ldr	r3, .L8
+ 2738 0150 FEFFFFEB 		bl	lcd_puts_x2
+  37:../visualizacion.c **** 	lcd_puts( 0, 60, BLACK, "   Comienza el juego!   " );
+ 2739              		.loc 1 37 0
+ 2740 0154 0000A0E3 		mov	r0, #0
+ 2741 0158 3C10A0E3 		mov	r1, #60
+ 2742 015c 0F20A0E3 		mov	r2, #15
+ 2743 0160 10309FE5 		ldr	r3, .L8+4
+ 2744 0164 FEFFFFEB 		bl	lcd_puts
+  38:../visualizacion.c **** }
+ 2745              		.loc 1 38 0
+ 2746 0168 0CD04BE2 		sub	sp, fp, #12
+ 2747 016c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2748 0170 1EFF2FE1 		bx	lr
+ 2749              	.L9:
+ 2750              		.align	2
+ 2751              	.L8:
+ 2752 0174 00000000 		.word	.LC0
+ 2753 0178 14000000 		.word	.LC1
+ 2754              		.cfi_endproc
+ 2755              	.LFE2:
+ 2757              		.section	.rodata
+ 2758 002d 000000   		.align	2
+ 2759              	.LC2:
+ 2760 0030 5800     		.ascii	"X\000"
+ 2761              		.text
+ 2762              		.align	2
+ 2763              		.global	drawX
+ 2765              	drawX:
+ 2766              	.LFB3:
+  39:../visualizacion.c **** 
+  40:../visualizacion.c **** void drawX(int posicion){
+ 2767              		.loc 1 40 0
+ 2768              		.cfi_startproc
+ 2769              		@ Function supports interworking.
+ 2770              		@ args = 0, pretend = 0, frame = 8
+ 2771              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2772 017c 0DC0A0E1 		mov	ip, sp
+ 2773              	.LCFI6:
+ 2774              		.cfi_def_cfa_register 12
+ 2775 0180 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2776 0184 04B04CE2 		sub	fp, ip, #4
+ 2777              		.cfi_offset 14, -8
+ 2778              		.cfi_offset 13, -12
+ 2779              		.cfi_offset 11, -16
+ 2780              	.LCFI7:
+ 2781              		.cfi_def_cfa 11, 4
+ 2782 0188 08D04DE2 		sub	sp, sp, #8
+ 2783 018c 10000BE5 		str	r0, [fp, #-16]
+  41:../visualizacion.c **** 
+  42:../visualizacion.c **** 	if (posicion == 0){
+ 2784              		.loc 1 42 0
+ 2785 0190 10301BE5 		ldr	r3, [fp, #-16]
+ 2786 0194 000053E3 		cmp	r3, #0
+ 2787 0198 0500001A 		bne	.L11
+  43:../visualizacion.c **** 		lcd_puts_x2(25,20,0xffffff,"X");
+ 2788              		.loc 1 43 0
+ 2789 019c 1900A0E3 		mov	r0, #25
+ 2790 01a0 1410A0E3 		mov	r1, #20
+ 2791 01a4 FF20A0E3 		mov	r2, #255
+ 2792 01a8 2C319FE5 		ldr	r3, .L20
+ 2793 01ac FEFFFFEB 		bl	lcd_puts_x2
+ 2794 01b0 460000EA 		b	.L10
+ 2795              	.L11:
+  44:../visualizacion.c **** 	}
+  45:../visualizacion.c **** 	else if (posicion == 1){
+ 2796              		.loc 1 45 0
+ 2797 01b4 10301BE5 		ldr	r3, [fp, #-16]
+ 2798 01b8 010053E3 		cmp	r3, #1
+ 2799 01bc 0500001A 		bne	.L13
+  46:../visualizacion.c **** 		lcd_puts_x2(80,20,0xffffff,"X");
+ 2800              		.loc 1 46 0
+ 2801 01c0 5000A0E3 		mov	r0, #80
+ 2802 01c4 1410A0E3 		mov	r1, #20
+ 2803 01c8 FF20A0E3 		mov	r2, #255
+ 2804 01cc 08319FE5 		ldr	r3, .L20
+ 2805 01d0 FEFFFFEB 		bl	lcd_puts_x2
+ 2806 01d4 3D0000EA 		b	.L10
+ 2807              	.L13:
+  47:../visualizacion.c **** 	}
+  48:../visualizacion.c **** 	else if (posicion == 2){
+ 2808              		.loc 1 48 0
+ 2809 01d8 10301BE5 		ldr	r3, [fp, #-16]
+ 2810 01dc 020053E3 		cmp	r3, #2
+ 2811 01e0 0500001A 		bne	.L14
+  49:../visualizacion.c **** 		lcd_puts_x2(120,20,0xffffff,"X");
+ 2812              		.loc 1 49 0
+ 2813 01e4 7800A0E3 		mov	r0, #120
+ 2814 01e8 1410A0E3 		mov	r1, #20
+ 2815 01ec FF20A0E3 		mov	r2, #255
+ 2816 01f0 E4309FE5 		ldr	r3, .L20
+ 2817 01f4 FEFFFFEB 		bl	lcd_puts_x2
+ 2818 01f8 340000EA 		b	.L10
+ 2819              	.L14:
+  50:../visualizacion.c **** 	}
+  51:../visualizacion.c **** 	else if (posicion == 3){
+ 2820              		.loc 1 51 0
+ 2821 01fc 10301BE5 		ldr	r3, [fp, #-16]
+ 2822 0200 030053E3 		cmp	r3, #3
+ 2823 0204 0500001A 		bne	.L15
+  52:../visualizacion.c **** 		lcd_puts_x2(25,110,0xffffff,"X");
+ 2824              		.loc 1 52 0
+ 2825 0208 1900A0E3 		mov	r0, #25
+ 2826 020c 6E10A0E3 		mov	r1, #110
+ 2827 0210 FF20A0E3 		mov	r2, #255
+ 2828 0214 C0309FE5 		ldr	r3, .L20
+ 2829 0218 FEFFFFEB 		bl	lcd_puts_x2
+ 2830 021c 2B0000EA 		b	.L10
+ 2831              	.L15:
+  53:../visualizacion.c **** 	}
+  54:../visualizacion.c **** 	else if (posicion == 4){
+ 2832              		.loc 1 54 0
+ 2833 0220 10301BE5 		ldr	r3, [fp, #-16]
+ 2834 0224 040053E3 		cmp	r3, #4
+ 2835 0228 0500001A 		bne	.L16
+  55:../visualizacion.c **** 		lcd_puts_x2(80,110,0xffffff,"X");
+ 2836              		.loc 1 55 0
+ 2837 022c 5000A0E3 		mov	r0, #80
+ 2838 0230 6E10A0E3 		mov	r1, #110
+ 2839 0234 FF20A0E3 		mov	r2, #255
+ 2840 0238 9C309FE5 		ldr	r3, .L20
+ 2841 023c FEFFFFEB 		bl	lcd_puts_x2
+ 2842 0240 220000EA 		b	.L10
+ 2843              	.L16:
+  56:../visualizacion.c **** 	}
+  57:../visualizacion.c **** 	else if (posicion == 5){
+ 2844              		.loc 1 57 0
+ 2845 0244 10301BE5 		ldr	r3, [fp, #-16]
+ 2846 0248 050053E3 		cmp	r3, #5
+ 2847 024c 0500001A 		bne	.L17
+  58:../visualizacion.c **** 		lcd_puts_x2(120,110,0xffffff,"X");
+ 2848              		.loc 1 58 0
+ 2849 0250 7800A0E3 		mov	r0, #120
+ 2850 0254 6E10A0E3 		mov	r1, #110
+ 2851 0258 FF20A0E3 		mov	r2, #255
+ 2852 025c 78309FE5 		ldr	r3, .L20
+ 2853 0260 FEFFFFEB 		bl	lcd_puts_x2
+ 2854 0264 190000EA 		b	.L10
+ 2855              	.L17:
+  59:../visualizacion.c **** 	}
+  60:../visualizacion.c **** 	else if (posicion == 6){
+ 2856              		.loc 1 60 0
+ 2857 0268 10301BE5 		ldr	r3, [fp, #-16]
+ 2858 026c 060053E3 		cmp	r3, #6
+ 2859 0270 0500001A 		bne	.L18
+  61:../visualizacion.c **** 		lcd_puts_x2(25,200,0xffffff,"X");
+ 2860              		.loc 1 61 0
+ 2861 0274 1900A0E3 		mov	r0, #25
+ 2862 0278 C810A0E3 		mov	r1, #200
+ 2863 027c FF20A0E3 		mov	r2, #255
+ 2864 0280 54309FE5 		ldr	r3, .L20
+ 2865 0284 FEFFFFEB 		bl	lcd_puts_x2
+ 2866 0288 100000EA 		b	.L10
+ 2867              	.L18:
+  62:../visualizacion.c **** 	}
+  63:../visualizacion.c **** 	else if (posicion == 7){
+ 2868              		.loc 1 63 0
+ 2869 028c 10301BE5 		ldr	r3, [fp, #-16]
+ 2870 0290 070053E3 		cmp	r3, #7
+ 2871 0294 0500001A 		bne	.L19
+  64:../visualizacion.c **** 		lcd_puts_x2(80,200,0xffffff,"X");
+ 2872              		.loc 1 64 0
+ 2873 0298 5000A0E3 		mov	r0, #80
+ 2874 029c C810A0E3 		mov	r1, #200
+ 2875 02a0 FF20A0E3 		mov	r2, #255
+ 2876 02a4 30309FE5 		ldr	r3, .L20
+ 2877 02a8 FEFFFFEB 		bl	lcd_puts_x2
+ 2878 02ac 070000EA 		b	.L10
+ 2879              	.L19:
+  65:../visualizacion.c **** 	}
+  66:../visualizacion.c **** 	else if (posicion == 8){
+ 2880              		.loc 1 66 0
+ 2881 02b0 10301BE5 		ldr	r3, [fp, #-16]
+ 2882 02b4 080053E3 		cmp	r3, #8
+ 2883 02b8 0400001A 		bne	.L10
+  67:../visualizacion.c **** 		lcd_puts_x2(120,200,0xffffff,"X");
+ 2884              		.loc 1 67 0
+ 2885 02bc 7800A0E3 		mov	r0, #120
+ 2886 02c0 C810A0E3 		mov	r1, #200
+ 2887 02c4 FF20A0E3 		mov	r2, #255
+ 2888 02c8 0C309FE5 		ldr	r3, .L20
+ 2889 02cc FEFFFFEB 		bl	lcd_puts_x2
+ 2890              	.L10:
+  68:../visualizacion.c **** 	}
+  69:../visualizacion.c **** 
+  70:../visualizacion.c **** }
+ 2891              		.loc 1 70 0
+ 2892 02d0 0CD04BE2 		sub	sp, fp, #12
+ 2893 02d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2894 02d8 1EFF2FE1 		bx	lr
+ 2895              	.L21:
+ 2896              		.align	2
+ 2897              	.L20:
+ 2898 02dc 30000000 		.word	.LC2
+ 2899              		.cfi_endproc
+ 2900              	.LFE3:
+ 2902              		.section	.rodata
+ 2903 0032 0000     		.align	2
+ 2904              	.LC3:
+ 2905 0034 4F00     		.ascii	"O\000"
+ 2906              		.text
+ 2907              		.align	2
+ 2908              		.global	drawO
+ 2910              	drawO:
+ 2911              	.LFB4:
+  71:../visualizacion.c **** 
+  72:../visualizacion.c **** void drawO(int posicion){
+ 2912              		.loc 1 72 0
+ 2913              		.cfi_startproc
+ 2914              		@ Function supports interworking.
+ 2915              		@ args = 0, pretend = 0, frame = 8
+ 2916              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2917 02e0 0DC0A0E1 		mov	ip, sp
+ 2918              	.LCFI8:
+ 2919              		.cfi_def_cfa_register 12
+ 2920 02e4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2921 02e8 04B04CE2 		sub	fp, ip, #4
+ 2922              		.cfi_offset 14, -8
+ 2923              		.cfi_offset 13, -12
+ 2924              		.cfi_offset 11, -16
+ 2925              	.LCFI9:
+ 2926              		.cfi_def_cfa 11, 4
+ 2927 02ec 08D04DE2 		sub	sp, sp, #8
+ 2928 02f0 10000BE5 		str	r0, [fp, #-16]
+  73:../visualizacion.c **** 
+  74:../visualizacion.c **** 	if (posicion == 0){
+ 2929              		.loc 1 74 0
+ 2930 02f4 10301BE5 		ldr	r3, [fp, #-16]
+ 2931 02f8 000053E3 		cmp	r3, #0
+ 2932 02fc 0500001A 		bne	.L23
+  75:../visualizacion.c **** 		lcd_puts_x2(25,20,0xffffff,"O");
+ 2933              		.loc 1 75 0
+ 2934 0300 1900A0E3 		mov	r0, #25
+ 2935 0304 1410A0E3 		mov	r1, #20
+ 2936 0308 FF20A0E3 		mov	r2, #255
+ 2937 030c 2C319FE5 		ldr	r3, .L32
+ 2938 0310 FEFFFFEB 		bl	lcd_puts_x2
+ 2939 0314 460000EA 		b	.L22
+ 2940              	.L23:
+  76:../visualizacion.c **** 	}
+  77:../visualizacion.c **** 	else if (posicion == 1){
+ 2941              		.loc 1 77 0
+ 2942 0318 10301BE5 		ldr	r3, [fp, #-16]
+ 2943 031c 010053E3 		cmp	r3, #1
+ 2944 0320 0500001A 		bne	.L25
+  78:../visualizacion.c **** 		lcd_puts_x2(80,20,0xffffff,"O");
+ 2945              		.loc 1 78 0
+ 2946 0324 5000A0E3 		mov	r0, #80
+ 2947 0328 1410A0E3 		mov	r1, #20
+ 2948 032c FF20A0E3 		mov	r2, #255
+ 2949 0330 08319FE5 		ldr	r3, .L32
+ 2950 0334 FEFFFFEB 		bl	lcd_puts_x2
+ 2951 0338 3D0000EA 		b	.L22
+ 2952              	.L25:
+  79:../visualizacion.c **** 	}
+  80:../visualizacion.c **** 	else if (posicion == 2){
+ 2953              		.loc 1 80 0
+ 2954 033c 10301BE5 		ldr	r3, [fp, #-16]
+ 2955 0340 020053E3 		cmp	r3, #2
+ 2956 0344 0500001A 		bne	.L26
+  81:../visualizacion.c **** 		lcd_puts_x2(120,20,0xffffff,"O");
+ 2957              		.loc 1 81 0
+ 2958 0348 7800A0E3 		mov	r0, #120
+ 2959 034c 1410A0E3 		mov	r1, #20
+ 2960 0350 FF20A0E3 		mov	r2, #255
+ 2961 0354 E4309FE5 		ldr	r3, .L32
+ 2962 0358 FEFFFFEB 		bl	lcd_puts_x2
+ 2963 035c 340000EA 		b	.L22
+ 2964              	.L26:
+  82:../visualizacion.c **** 	}
+  83:../visualizacion.c **** 	else if (posicion == 3){
+ 2965              		.loc 1 83 0
+ 2966 0360 10301BE5 		ldr	r3, [fp, #-16]
+ 2967 0364 030053E3 		cmp	r3, #3
+ 2968 0368 0500001A 		bne	.L27
+  84:../visualizacion.c **** 		lcd_puts_x2(25,110,0xffffff,"O");
+ 2969              		.loc 1 84 0
+ 2970 036c 1900A0E3 		mov	r0, #25
+ 2971 0370 6E10A0E3 		mov	r1, #110
+ 2972 0374 FF20A0E3 		mov	r2, #255
+ 2973 0378 C0309FE5 		ldr	r3, .L32
+ 2974 037c FEFFFFEB 		bl	lcd_puts_x2
+ 2975 0380 2B0000EA 		b	.L22
+ 2976              	.L27:
+  85:../visualizacion.c **** 	}
+  86:../visualizacion.c **** 	else if (posicion == 4){
+ 2977              		.loc 1 86 0
+ 2978 0384 10301BE5 		ldr	r3, [fp, #-16]
+ 2979 0388 040053E3 		cmp	r3, #4
+ 2980 038c 0500001A 		bne	.L28
+  87:../visualizacion.c **** 		lcd_puts_x2(80,110,0xffffff,"O");
+ 2981              		.loc 1 87 0
+ 2982 0390 5000A0E3 		mov	r0, #80
+ 2983 0394 6E10A0E3 		mov	r1, #110
+ 2984 0398 FF20A0E3 		mov	r2, #255
+ 2985 039c 9C309FE5 		ldr	r3, .L32
+ 2986 03a0 FEFFFFEB 		bl	lcd_puts_x2
+ 2987 03a4 220000EA 		b	.L22
+ 2988              	.L28:
+  88:../visualizacion.c **** 	}
+  89:../visualizacion.c **** 	else if (posicion == 5){
+ 2989              		.loc 1 89 0
+ 2990 03a8 10301BE5 		ldr	r3, [fp, #-16]
+ 2991 03ac 050053E3 		cmp	r3, #5
+ 2992 03b0 0500001A 		bne	.L29
+  90:../visualizacion.c **** 		lcd_puts_x2(120,110,0xffffff,"O");
+ 2993              		.loc 1 90 0
+ 2994 03b4 7800A0E3 		mov	r0, #120
+ 2995 03b8 6E10A0E3 		mov	r1, #110
+ 2996 03bc FF20A0E3 		mov	r2, #255
+ 2997 03c0 78309FE5 		ldr	r3, .L32
+ 2998 03c4 FEFFFFEB 		bl	lcd_puts_x2
+ 2999 03c8 190000EA 		b	.L22
+ 3000              	.L29:
+  91:../visualizacion.c **** 	}
+  92:../visualizacion.c **** 	else if (posicion == 6){
+ 3001              		.loc 1 92 0
+ 3002 03cc 10301BE5 		ldr	r3, [fp, #-16]
+ 3003 03d0 060053E3 		cmp	r3, #6
+ 3004 03d4 0500001A 		bne	.L30
+  93:../visualizacion.c **** 		lcd_puts_x2(25,200,0xffffff,"O");
+ 3005              		.loc 1 93 0
+ 3006 03d8 1900A0E3 		mov	r0, #25
+ 3007 03dc C810A0E3 		mov	r1, #200
+ 3008 03e0 FF20A0E3 		mov	r2, #255
+ 3009 03e4 54309FE5 		ldr	r3, .L32
+ 3010 03e8 FEFFFFEB 		bl	lcd_puts_x2
+ 3011 03ec 100000EA 		b	.L22
+ 3012              	.L30:
+  94:../visualizacion.c **** 	}
+  95:../visualizacion.c **** 	else if (posicion == 7){
+ 3013              		.loc 1 95 0
+ 3014 03f0 10301BE5 		ldr	r3, [fp, #-16]
+ 3015 03f4 070053E3 		cmp	r3, #7
+ 3016 03f8 0500001A 		bne	.L31
+  96:../visualizacion.c **** 		lcd_puts_x2(80,200,0xffffff,"O");
+ 3017              		.loc 1 96 0
+ 3018 03fc 5000A0E3 		mov	r0, #80
+ 3019 0400 C810A0E3 		mov	r1, #200
+ 3020 0404 FF20A0E3 		mov	r2, #255
+ 3021 0408 30309FE5 		ldr	r3, .L32
+ 3022 040c FEFFFFEB 		bl	lcd_puts_x2
+ 3023 0410 070000EA 		b	.L22
+ 3024              	.L31:
+  97:../visualizacion.c **** 	}
+  98:../visualizacion.c **** 	else if (posicion == 8){
+ 3025              		.loc 1 98 0
+ 3026 0414 10301BE5 		ldr	r3, [fp, #-16]
+ 3027 0418 080053E3 		cmp	r3, #8
+ 3028 041c 0400001A 		bne	.L22
+  99:../visualizacion.c **** 		lcd_puts_x2(120,200,0xffffff,"O");
+ 3029              		.loc 1 99 0
+ 3030 0420 7800A0E3 		mov	r0, #120
+ 3031 0424 C810A0E3 		mov	r1, #200
+ 3032 0428 FF20A0E3 		mov	r2, #255
+ 3033 042c 0C309FE5 		ldr	r3, .L32
+ 3034 0430 FEFFFFEB 		bl	lcd_puts_x2
+ 3035              	.L22:
+ 100:../visualizacion.c **** 	}
+ 101:../visualizacion.c **** 
+ 102:../visualizacion.c **** }
+ 3036              		.loc 1 102 0
+ 3037 0434 0CD04BE2 		sub	sp, fp, #12
+ 3038 0438 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3039 043c 1EFF2FE1 		bx	lr
+ 3040              	.L33:
+ 3041              		.align	2
+ 3042              	.L32:
+ 3043 0440 34000000 		.word	.LC3
+ 3044              		.cfi_endproc
+ 3045              	.LFE4:
+ 3047              		.section	.rodata
+ 3048 0036 0000     		.align	2
+ 3049              	.LC4:
+ 3050 0038 20202020 		.ascii	"      GANA O      \000"
+ 3050      20204741 
+ 3050      4E41204F 
+ 3050      20202020 
+ 3050      202000
+ 3051 004b 00       		.align	2
+ 3052              	.LC5:
+ 3053 004c 20202020 		.ascii	"      GANA X      \000"
+ 3053      20204741 
+ 3053      4E412058 
+ 3053      20202020 
+ 3053      202000
+ 3054 005f 00       		.align	2
+ 3055              	.LC6:
+ 3056 0060 20202020 		.ascii	"      EMPATE      \000"
+ 3056      2020454D 
+ 3056      50415445 
+ 3056      20202020 
+ 3056      202000
+ 3057 0073 00       		.text
+ 3058              		.align	2
+ 3059              		.global	drawFin
+ 3061              	drawFin:
+ 3062              	.LFB5:
+ 103:../visualizacion.c **** 
+ 104:../visualizacion.c **** void drawFin(int fin){
+ 3063              		.loc 1 104 0
+ 3064              		.cfi_startproc
+ 3065              		@ Function supports interworking.
+ 3066              		@ args = 0, pretend = 0, frame = 8
+ 3067              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3068 0444 0DC0A0E1 		mov	ip, sp
+ 3069              	.LCFI10:
+ 3070              		.cfi_def_cfa_register 12
+ 3071 0448 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3072 044c 04B04CE2 		sub	fp, ip, #4
+ 3073              		.cfi_offset 14, -8
+ 3074              		.cfi_offset 13, -12
+ 3075              		.cfi_offset 11, -16
+ 3076              	.LCFI11:
+ 3077              		.cfi_def_cfa 11, 4
+ 3078 0450 08D04DE2 		sub	sp, sp, #8
+ 3079 0454 10000BE5 		str	r0, [fp, #-16]
+ 105:../visualizacion.c **** 	if (fin == 1){
+ 3080              		.loc 1 105 0
+ 3081 0458 10301BE5 		ldr	r3, [fp, #-16]
+ 3082 045c 010053E3 		cmp	r3, #1
+ 3083 0460 0600001A 		bne	.L35
+ 106:../visualizacion.c **** 		lcd_clear();
+ 3084              		.loc 1 106 0
+ 3085 0464 FEFFFFEB 		bl	lcd_clear
+ 107:../visualizacion.c **** 		lcd_puts_x2( 0, 20, BLACK, "      GANA O      " );
+ 3086              		.loc 1 107 0
+ 3087 0468 0000A0E3 		mov	r0, #0
+ 3088 046c 1410A0E3 		mov	r1, #20
+ 3089 0470 0F20A0E3 		mov	r2, #15
+ 3090 0474 5C309FE5 		ldr	r3, .L38
+ 3091 0478 FEFFFFEB 		bl	lcd_puts_x2
+ 3092 047c 120000EA 		b	.L34
+ 3093              	.L35:
+ 108:../visualizacion.c **** 	}
+ 109:../visualizacion.c **** 	else if (fin == 2){
+ 3094              		.loc 1 109 0
+ 3095 0480 10301BE5 		ldr	r3, [fp, #-16]
+ 3096 0484 020053E3 		cmp	r3, #2
+ 3097 0488 0600001A 		bne	.L37
+ 110:../visualizacion.c **** 		lcd_clear();
+ 3098              		.loc 1 110 0
+ 3099 048c FEFFFFEB 		bl	lcd_clear
+ 111:../visualizacion.c **** 		lcd_puts_x2( 0, 20, BLACK, "      GANA X      " );
+ 3100              		.loc 1 111 0
+ 3101 0490 0000A0E3 		mov	r0, #0
+ 3102 0494 1410A0E3 		mov	r1, #20
+ 3103 0498 0F20A0E3 		mov	r2, #15
+ 3104 049c 38309FE5 		ldr	r3, .L38+4
+ 3105 04a0 FEFFFFEB 		bl	lcd_puts_x2
+ 3106 04a4 080000EA 		b	.L34
+ 3107              	.L37:
+ 112:../visualizacion.c **** 	}
+ 113:../visualizacion.c **** 	else if (fin == 3){
+ 3108              		.loc 1 113 0
+ 3109 04a8 10301BE5 		ldr	r3, [fp, #-16]
+ 3110 04ac 030053E3 		cmp	r3, #3
+ 3111 04b0 0500001A 		bne	.L34
+ 114:../visualizacion.c **** 		lcd_clear();
+ 3112              		.loc 1 114 0
+ 3113 04b4 FEFFFFEB 		bl	lcd_clear
+ 115:../visualizacion.c **** 		lcd_puts_x2( 0, 20, BLACK, "      EMPATE      " );
+ 3114              		.loc 1 115 0
+ 3115 04b8 0000A0E3 		mov	r0, #0
+ 3116 04bc 1410A0E3 		mov	r1, #20
+ 3117 04c0 0F20A0E3 		mov	r2, #15
+ 3118 04c4 14309FE5 		ldr	r3, .L38+8
+ 3119 04c8 FEFFFFEB 		bl	lcd_puts_x2
+ 3120              	.L34:
+ 116:../visualizacion.c **** 	}
+ 117:../visualizacion.c **** }
+ 3121              		.loc 1 117 0
+ 3122 04cc 0CD04BE2 		sub	sp, fp, #12
+ 3123 04d0 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3124 04d4 1EFF2FE1 		bx	lr
+ 3125              	.L39:
+ 3126              		.align	2
+ 3127              	.L38:
+ 3128 04d8 38000000 		.word	.LC4
+ 3129 04dc 4C000000 		.word	.LC5
+ 3130 04e0 60000000 		.word	.LC6
+ 3131              		.cfi_endproc
+ 3132              	.LFE5:
+ 3134              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 visualizacion.c
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2570   .text:00000000 $a
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2573   .text:00000000 init_visualizacion
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2605   .text:00000020 drawTab
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2701   .text:00000130 $d
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2706   .rodata:00000000 $d
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2713   .text:00000134 $a
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2716   .text:00000134 init_welcome3R
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2752   .text:00000174 $d
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2762   .text:0000017c $a
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2765   .text:0000017c drawX
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2898   .text:000002dc $d
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2907   .text:000002e0 $a
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:2910   .text:000002e0 drawO
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:3043   .text:00000440 $d
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:3058   .text:00000444 $a
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:3061   .text:00000444 drawFin
+C:\Users\Paloma\AppData\Local\Temp\cci9BMTY.s:3128   .text:000004d8 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+lcd_init
+lcd_clear
+__aeabi_idiv
+lcd_draw_hline
+lcd_draw_vline
+NCOL
+lcd_puts_x2
+lcd_puts

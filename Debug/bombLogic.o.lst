@@ -1,0 +1,897 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"bombLogic.c"
+  21              	.Ltext0:
+  22              		.file 1 "../bombLogic.c"
+ 2605              		.align	2
+ 2608              	bombPosX:
+ 2609 0000 FFFFFFFF 		.word	-1
+ 2610              		.global	bombPosY
+ 2611              		.align	2
+ 2614              	bombPosY:
+ 2615 0004 FFFFFFFF 		.word	-1
+ 2616              		.global	fbombPosX
+ 2617              		.align	2
+ 2620              	fbombPosX:
+ 2621 0008 FFFFFFFF 		.word	-1
+ 2622              		.global	fbombPosY
+ 2623              		.align	2
+ 2626              	fbombPosY:
+ 2627 000c FFFFFFFF 		.word	-1
+ 2628              		.text
+ 2629              		.align	2
+ 2630              		.global	setBomb
+ 2632              	setBomb:
+ 2633              	.LFB0:
+   1:../bombLogic.c **** #include "bombLogic.h"
+   2:../bombLogic.c **** 
+   3:../bombLogic.c **** int bombPosX = -1;
+   4:../bombLogic.c **** int bombPosY = -1;
+   5:../bombLogic.c **** int fbombPosX = -1;
+   6:../bombLogic.c **** int fbombPosY = -1;
+   7:../bombLogic.c **** 
+   8:../bombLogic.c **** extern int map16x16[];
+   9:../bombLogic.c **** extern int playerPosX;
+  10:../bombLogic.c **** extern int playerPosY;
+  11:../bombLogic.c **** extern int exitPosX;
+  12:../bombLogic.c **** extern int exitPosY;
+  13:../bombLogic.c **** 
+  14:../bombLogic.c **** extern void ledsSetBlink(int aux);
+  15:../bombLogic.c **** 
+  16:../bombLogic.c **** void setBomb(int posX, int posY){
+ 2634              		.loc 1 16 0
+ 2635              		.cfi_startproc
+ 2636              		@ Function supports interworking.
+ 2637              		@ args = 0, pretend = 0, frame = 8
+ 2638              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2639 0000 0DC0A0E1 		mov	ip, sp
+ 2640              	.LCFI0:
+ 2641              		.cfi_def_cfa_register 12
+ 2642 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2643 0008 04B04CE2 		sub	fp, ip, #4
+ 2644              		.cfi_offset 14, -8
+ 2645              		.cfi_offset 13, -12
+ 2646              		.cfi_offset 11, -16
+ 2647              	.LCFI1:
+ 2648              		.cfi_def_cfa 11, 4
+ 2649 000c 08D04DE2 		sub	sp, sp, #8
+ 2650 0010 10000BE5 		str	r0, [fp, #-16]
+ 2651 0014 14100BE5 		str	r1, [fp, #-20]
+  17:../bombLogic.c **** 	// Si ya esta plantada la bomba fuera.
+  18:../bombLogic.c **** 	if (bombPosX != -1 || bombPosY != -1)
+ 2652              		.loc 1 18 0
+ 2653 0018 F4309FE5 		ldr	r3, .L7
+ 2654 001c 003093E5 		ldr	r3, [r3, #0]
+ 2655 0020 010073E3 		cmn	r3, #1
+ 2656 0024 3400001A 		bne	.L5
+ 2657              		.loc 1 18 0 is_stmt 0 discriminator 1
+ 2658 0028 E8309FE5 		ldr	r3, .L7+4
+ 2659 002c 003093E5 		ldr	r3, [r3, #0]
+ 2660 0030 010073E3 		cmn	r3, #1
+ 2661 0034 3200001A 		bne	.L6
+ 2662              	.L3:
+  19:../bombLogic.c **** 		return;
+  20:../bombLogic.c **** 
+  21:../bombLogic.c **** 	// Ponemos la bomba en al cuadradito en el que mas metidos estemos
+  22:../bombLogic.c **** 	bombPosX = ((posX + 16/2) /16)*16;
+ 2663              		.loc 1 22 0 is_stmt 1
+ 2664 0038 10301BE5 		ldr	r3, [fp, #-16]
+ 2665 003c 083083E2 		add	r3, r3, #8
+ 2666 0040 0F2083E2 		add	r2, r3, #15
+ 2667 0044 000053E3 		cmp	r3, #0
+ 2668 0048 0230A0B1 		movlt	r3, r2
+ 2669 004c 4332A0E1 		mov	r3, r3, asr #4
+ 2670 0050 0322A0E1 		mov	r2, r3, asl #4
+ 2671 0054 B8309FE5 		ldr	r3, .L7
+ 2672 0058 002083E5 		str	r2, [r3, #0]
+  23:../bombLogic.c **** 	bombPosY = ((posY + 16/2) /16)*16;
+ 2673              		.loc 1 23 0
+ 2674 005c 14301BE5 		ldr	r3, [fp, #-20]
+ 2675 0060 083083E2 		add	r3, r3, #8
+ 2676 0064 0F2083E2 		add	r2, r3, #15
+ 2677 0068 000053E3 		cmp	r3, #0
+ 2678 006c 0230A0B1 		movlt	r3, r2
+ 2679 0070 4332A0E1 		mov	r3, r3, asr #4
+ 2680 0074 0322A0E1 		mov	r2, r3, asl #4
+ 2681 0078 98309FE5 		ldr	r3, .L7+4
+ 2682 007c 002083E5 		str	r2, [r3, #0]
+  24:../bombLogic.c **** 
+  25:../bombLogic.c **** 	enviarPosBomb(bombPosX, bombPosY);
+ 2683              		.loc 1 25 0
+ 2684 0080 8C309FE5 		ldr	r3, .L7
+ 2685 0084 002093E5 		ldr	r2, [r3, #0]
+ 2686 0088 88309FE5 		ldr	r3, .L7+4
+ 2687 008c 003093E5 		ldr	r3, [r3, #0]
+ 2688 0090 0200A0E1 		mov	r0, r2
+ 2689 0094 0310A0E1 		mov	r1, r3
+ 2690 0098 FEFFFFEB 		bl	enviarPosBomb
+  26:../bombLogic.c **** 
+  27:../bombLogic.c **** 	ledsSetBlink(1);
+ 2691              		.loc 1 27 0
+ 2692 009c 0100A0E3 		mov	r0, #1
+ 2693 00a0 FEFFFFEB 		bl	ledsSetBlink
+  28:../bombLogic.c **** 
+  29:../bombLogic.c **** 	rTCON |= (0x1<<13);
+ 2694              		.loc 1 29 0
+ 2695 00a4 70309FE5 		ldr	r3, .L7+8
+ 2696 00a8 6C209FE5 		ldr	r2, .L7+8
+ 2697 00ac 002092E5 		ldr	r2, [r2, #0]
+ 2698 00b0 022A82E3 		orr	r2, r2, #8192
+ 2699 00b4 002083E5 		str	r2, [r3, #0]
+  30:../bombLogic.c **** 	rTCON &= ~(0x1<<13);
+ 2700              		.loc 1 30 0
+ 2701 00b8 5C309FE5 		ldr	r3, .L7+8
+ 2702 00bc 58209FE5 		ldr	r2, .L7+8
+ 2703 00c0 002092E5 		ldr	r2, [r2, #0]
+ 2704 00c4 022AC2E3 		bic	r2, r2, #8192
+ 2705 00c8 002083E5 		str	r2, [r3, #0]
+  31:../bombLogic.c **** 	rTCON |= (0x1<<15);
+ 2706              		.loc 1 31 0
+ 2707 00cc 48309FE5 		ldr	r3, .L7+8
+ 2708 00d0 44209FE5 		ldr	r2, .L7+8
+ 2709 00d4 002092E5 		ldr	r2, [r2, #0]
+ 2710 00d8 022982E3 		orr	r2, r2, #32768
+ 2711 00dc 002083E5 		str	r2, [r3, #0]
+  32:../bombLogic.c **** 	rTCON |= 0x1<<12;
+ 2712              		.loc 1 32 0
+ 2713 00e0 34309FE5 		ldr	r3, .L7+8
+ 2714 00e4 30209FE5 		ldr	r2, .L7+8
+ 2715 00e8 002092E5 		ldr	r2, [r2, #0]
+ 2716 00ec 012A82E3 		orr	r2, r2, #4096
+ 2717 00f0 002083E5 		str	r2, [r3, #0]
+  33:../bombLogic.c **** 
+  34:../bombLogic.c **** 	redrawChanging();
+ 2718              		.loc 1 34 0
+ 2719 00f4 FEFFFFEB 		bl	redrawChanging
+ 2720 00f8 020000EA 		b	.L1
+ 2721              	.L5:
+  19:../bombLogic.c **** 		return;
+ 2722              		.loc 1 19 0
+ 2723 00fc 0000A0E1 		mov	r0, r0	@ nop
+ 2724 0100 000000EA 		b	.L1
+ 2725              	.L6:
+ 2726 0104 0000A0E1 		mov	r0, r0	@ nop
+ 2727              	.L1:
+  35:../bombLogic.c **** }
+ 2728              		.loc 1 35 0
+ 2729 0108 0CD04BE2 		sub	sp, fp, #12
+ 2730 010c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2731 0110 1EFF2FE1 		bx	lr
+ 2732              	.L8:
+ 2733              		.align	2
+ 2734              	.L7:
+ 2735 0114 00000000 		.word	bombPosX
+ 2736 0118 00000000 		.word	bombPosY
+ 2737 011c 0800D501 		.word	30736392
+ 2738              		.cfi_endproc
+ 2739              	.LFE0:
+ 2741              		.align	2
+ 2742              		.global	boomBomb
+ 2744              	boomBomb:
+ 2745              	.LFB1:
+  36:../bombLogic.c **** 
+  37:../bombLogic.c **** void boomBomb(int mineOrFriends) {
+ 2746              		.loc 1 37 0
+ 2747              		.cfi_startproc
+ 2748              		@ Function supports interworking.
+ 2749              		@ args = 0, pretend = 0, frame = 32
+ 2750              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2751 0120 0DC0A0E1 		mov	ip, sp
+ 2752              	.LCFI2:
+ 2753              		.cfi_def_cfa_register 12
+ 2754 0124 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2755 0128 04B04CE2 		sub	fp, ip, #4
+ 2756              		.cfi_offset 14, -8
+ 2757              		.cfi_offset 13, -12
+ 2758              		.cfi_offset 11, -16
+ 2759              	.LCFI3:
+ 2760              		.cfi_def_cfa 11, 4
+ 2761 012c 20D04DE2 		sub	sp, sp, #32
+ 2762 0130 28000BE5 		str	r0, [fp, #-40]
+  38:../bombLogic.c **** 	if(mineOrFriends == 0){
+ 2763              		.loc 1 38 0
+ 2764 0134 28301BE5 		ldr	r3, [fp, #-40]
+ 2765 0138 000053E3 		cmp	r3, #0
+ 2766 013c 1100001A 		bne	.L10
+  39:../bombLogic.c **** 		if (bombPosX == -1 && bombPosY == -1)
+ 2767              		.loc 1 39 0
+ 2768 0140 94369FE5 		ldr	r3, .L41
+ 2769 0144 003093E5 		ldr	r3, [r3, #0]
+ 2770 0148 010073E3 		cmn	r3, #1
+ 2771 014c 0300001A 		bne	.L11
+ 2772              		.loc 1 39 0 is_stmt 0 discriminator 1
+ 2773 0150 88369FE5 		ldr	r3, .L41+4
+ 2774 0154 003093E5 		ldr	r3, [r3, #0]
+ 2775 0158 010073E3 		cmn	r3, #1
+ 2776 015c 9801000A 		beq	.L39
+ 2777              	.L11:
+  40:../bombLogic.c **** 			return;
+  41:../bombLogic.c **** 		enviarPosBombBoom(bombPosX, bombPosY);
+ 2778              		.loc 1 41 0 is_stmt 1
+ 2779 0160 74369FE5 		ldr	r3, .L41
+ 2780 0164 002093E5 		ldr	r2, [r3, #0]
+ 2781 0168 70369FE5 		ldr	r3, .L41+4
+ 2782 016c 003093E5 		ldr	r3, [r3, #0]
+ 2783 0170 0200A0E1 		mov	r0, r2
+ 2784 0174 0310A0E1 		mov	r1, r3
+ 2785 0178 FEFFFFEB 		bl	enviarPosBombBoom
+  42:../bombLogic.c **** 		ledsSetBlink(0);
+ 2786              		.loc 1 42 0
+ 2787 017c 0000A0E3 		mov	r0, #0
+ 2788 0180 FEFFFFEB 		bl	ledsSetBlink
+ 2789 0184 070000EA 		b	.L13
+ 2790              	.L10:
+  43:../bombLogic.c **** 	}else{
+  44:../bombLogic.c **** 		if (fbombPosX == -1 && fbombPosY == -1)
+ 2791              		.loc 1 44 0
+ 2792 0188 54369FE5 		ldr	r3, .L41+8
+ 2793 018c 003093E5 		ldr	r3, [r3, #0]
+ 2794 0190 010073E3 		cmn	r3, #1
+ 2795 0194 0300001A 		bne	.L13
+ 2796              		.loc 1 44 0 is_stmt 0 discriminator 1
+ 2797 0198 48369FE5 		ldr	r3, .L41+12
+ 2798 019c 003093E5 		ldr	r3, [r3, #0]
+ 2799 01a0 010073E3 		cmn	r3, #1
+ 2800 01a4 8801000A 		beq	.L40
+ 2801              	.L13:
+  45:../bombLogic.c **** 			return;
+  46:../bombLogic.c **** 	}
+  47:../bombLogic.c **** 
+  48:../bombLogic.c **** 	if(mineOrFriends == 0){
+ 2802              		.loc 1 48 0 is_stmt 1
+ 2803 01a8 28301BE5 		ldr	r3, [fp, #-40]
+ 2804 01ac 000053E3 		cmp	r3, #0
+ 2805 01b0 0700001A 		bne	.L14
+  49:../bombLogic.c **** 		clear16x16(bombPosX, bombPosY);
+ 2806              		.loc 1 49 0
+ 2807 01b4 20369FE5 		ldr	r3, .L41
+ 2808 01b8 002093E5 		ldr	r2, [r3, #0]
+ 2809 01bc 1C369FE5 		ldr	r3, .L41+4
+ 2810 01c0 003093E5 		ldr	r3, [r3, #0]
+ 2811 01c4 0200A0E1 		mov	r0, r2
+ 2812 01c8 0310A0E1 		mov	r1, r3
+ 2813 01cc FEFFFFEB 		bl	clear16x16
+ 2814 01d0 060000EA 		b	.L15
+ 2815              	.L14:
+  50:../bombLogic.c **** 	}else{
+  51:../bombLogic.c **** 		clear16x16(fbombPosX, fbombPosY);
+ 2816              		.loc 1 51 0
+ 2817 01d4 08369FE5 		ldr	r3, .L41+8
+ 2818 01d8 002093E5 		ldr	r2, [r3, #0]
+ 2819 01dc 04369FE5 		ldr	r3, .L41+12
+ 2820 01e0 003093E5 		ldr	r3, [r3, #0]
+ 2821 01e4 0200A0E1 		mov	r0, r2
+ 2822 01e8 0310A0E1 		mov	r1, r3
+ 2823 01ec FEFFFFEB 		bl	clear16x16
+ 2824              	.L15:
+  52:../bombLogic.c **** 	}
+  53:../bombLogic.c **** 
+  54:../bombLogic.c **** 	int playerTopLeftX = playerPosX/16;
+ 2825              		.loc 1 54 0
+ 2826 01f0 F4359FE5 		ldr	r3, .L41+16
+ 2827 01f4 003093E5 		ldr	r3, [r3, #0]
+ 2828 01f8 0F2083E2 		add	r2, r3, #15
+ 2829 01fc 000053E3 		cmp	r3, #0
+ 2830 0200 0230A0B1 		movlt	r3, r2
+ 2831 0204 4332A0E1 		mov	r3, r3, asr #4
+ 2832 0208 18300BE5 		str	r3, [fp, #-24]
+  55:../bombLogic.c **** 	int playerTopLeftY = playerPosY/16;
+ 2833              		.loc 1 55 0
+ 2834 020c DC359FE5 		ldr	r3, .L41+20
+ 2835 0210 003093E5 		ldr	r3, [r3, #0]
+ 2836 0214 0F2083E2 		add	r2, r3, #15
+ 2837 0218 000053E3 		cmp	r3, #0
+ 2838 021c 0230A0B1 		movlt	r3, r2
+ 2839 0220 4332A0E1 		mov	r3, r3, asr #4
+ 2840 0224 1C300BE5 		str	r3, [fp, #-28]
+  56:../bombLogic.c **** 	int playerBotRigthX = (playerPosX+15)/16;
+ 2841              		.loc 1 56 0
+ 2842 0228 BC359FE5 		ldr	r3, .L41+16
+ 2843 022c 003093E5 		ldr	r3, [r3, #0]
+ 2844 0230 0F3083E2 		add	r3, r3, #15
+ 2845 0234 0F2083E2 		add	r2, r3, #15
+ 2846 0238 000053E3 		cmp	r3, #0
+ 2847 023c 0230A0B1 		movlt	r3, r2
+ 2848 0240 4332A0E1 		mov	r3, r3, asr #4
+ 2849 0244 20300BE5 		str	r3, [fp, #-32]
+  57:../bombLogic.c **** 	int playerBotRigthY = (playerPosY+15)/16;
+ 2850              		.loc 1 57 0
+ 2851 0248 A0359FE5 		ldr	r3, .L41+20
+ 2852 024c 003093E5 		ldr	r3, [r3, #0]
+ 2853 0250 0F3083E2 		add	r3, r3, #15
+ 2854 0254 0F2083E2 		add	r2, r3, #15
+ 2855 0258 000053E3 		cmp	r3, #0
+ 2856 025c 0230A0B1 		movlt	r3, r2
+ 2857 0260 4332A0E1 		mov	r3, r3, asr #4
+ 2858 0264 24300BE5 		str	r3, [fp, #-36]
+  58:../bombLogic.c **** 
+  59:../bombLogic.c **** 	int i, j;
+  60:../bombLogic.c **** 	if(mineOrFriends == 0){
+ 2859              		.loc 1 60 0
+ 2860 0268 28301BE5 		ldr	r3, [fp, #-40]
+ 2861 026c 000053E3 		cmp	r3, #0
+ 2862 0270 0E00001A 		bne	.L16
+  61:../bombLogic.c **** 		i = bombPosX /16;
+ 2863              		.loc 1 61 0
+ 2864 0274 60359FE5 		ldr	r3, .L41
+ 2865 0278 003093E5 		ldr	r3, [r3, #0]
+ 2866 027c 0F2083E2 		add	r2, r3, #15
+ 2867 0280 000053E3 		cmp	r3, #0
+ 2868 0284 0230A0B1 		movlt	r3, r2
+ 2869 0288 4332A0E1 		mov	r3, r3, asr #4
+ 2870 028c 10300BE5 		str	r3, [fp, #-16]
+  62:../bombLogic.c **** 		j = bombPosY /16;
+ 2871              		.loc 1 62 0
+ 2872 0290 48359FE5 		ldr	r3, .L41+4
+ 2873 0294 003093E5 		ldr	r3, [r3, #0]
+ 2874 0298 0F2083E2 		add	r2, r3, #15
+ 2875 029c 000053E3 		cmp	r3, #0
+ 2876 02a0 0230A0B1 		movlt	r3, r2
+ 2877 02a4 4332A0E1 		mov	r3, r3, asr #4
+ 2878 02a8 14300BE5 		str	r3, [fp, #-20]
+ 2879 02ac 0D0000EA 		b	.L17
+ 2880              	.L16:
+  63:../bombLogic.c **** 	}else{
+  64:../bombLogic.c **** 		i = fbombPosX /16;
+ 2881              		.loc 1 64 0
+ 2882 02b0 2C359FE5 		ldr	r3, .L41+8
+ 2883 02b4 003093E5 		ldr	r3, [r3, #0]
+ 2884 02b8 0F2083E2 		add	r2, r3, #15
+ 2885 02bc 000053E3 		cmp	r3, #0
+ 2886 02c0 0230A0B1 		movlt	r3, r2
+ 2887 02c4 4332A0E1 		mov	r3, r3, asr #4
+ 2888 02c8 10300BE5 		str	r3, [fp, #-16]
+  65:../bombLogic.c **** 		j = fbombPosY /16;
+ 2889              		.loc 1 65 0
+ 2890 02cc 14359FE5 		ldr	r3, .L41+12
+ 2891 02d0 003093E5 		ldr	r3, [r3, #0]
+ 2892 02d4 0F2083E2 		add	r2, r3, #15
+ 2893 02d8 000053E3 		cmp	r3, #0
+ 2894 02dc 0230A0B1 		movlt	r3, r2
+ 2895 02e0 4332A0E1 		mov	r3, r3, asr #4
+ 2896 02e4 14300BE5 		str	r3, [fp, #-20]
+ 2897              	.L17:
+  66:../bombLogic.c **** 	}
+  67:../bombLogic.c **** 
+  68:../bombLogic.c **** 
+  69:../bombLogic.c **** 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+ 2898              		.loc 1 69 0
+ 2899 02e8 10201BE5 		ldr	r2, [fp, #-16]
+ 2900 02ec 18301BE5 		ldr	r3, [fp, #-24]
+ 2901 02f0 030052E1 		cmp	r2, r3
+ 2902 02f4 0300001A 		bne	.L18
+ 2903              		.loc 1 69 0 is_stmt 0 discriminator 1
+ 2904 02f8 14201BE5 		ldr	r2, [fp, #-20]
+ 2905 02fc 1C301BE5 		ldr	r3, [fp, #-28]
+ 2906 0300 030052E1 		cmp	r2, r3
+ 2907 0304 0700000A 		beq	.L19
+ 2908              	.L18:
+ 2909              		.loc 1 69 0 discriminator 2
+ 2910 0308 10201BE5 		ldr	r2, [fp, #-16]
+ 2911 030c 20301BE5 		ldr	r3, [fp, #-32]
+ 2912 0310 030052E1 		cmp	r2, r3
+ 2913 0314 0500001A 		bne	.L20
+ 2914              		.loc 1 69 0 discriminator 1
+ 2915 0318 14201BE5 		ldr	r2, [fp, #-20]
+ 2916 031c 24301BE5 		ldr	r3, [fp, #-36]
+ 2917 0320 030052E1 		cmp	r2, r3
+ 2918 0324 0100001A 		bne	.L20
+ 2919              	.L19:
+  70:../bombLogic.c **** 		gameOver();
+ 2920              		.loc 1 70 0 is_stmt 1
+ 2921 0328 FEFFFFEB 		bl	gameOver
+  71:../bombLogic.c **** 		return;
+ 2922              		.loc 1 71 0
+ 2923 032c 270100EA 		b	.L9
+ 2924              	.L20:
+  72:../bombLogic.c **** 	}
+  73:../bombLogic.c **** 
+  74:../bombLogic.c **** 	//up.
+  75:../bombLogic.c **** 	j = j-1;
+ 2925              		.loc 1 75 0
+ 2926 0330 14301BE5 		ldr	r3, [fp, #-20]
+ 2927 0334 013043E2 		sub	r3, r3, #1
+ 2928 0338 14300BE5 		str	r3, [fp, #-20]
+  76:../bombLogic.c **** 	if(map16x16[j*(320/16) + i] == Dirt){
+ 2929              		.loc 1 76 0
+ 2930 033c 14201BE5 		ldr	r2, [fp, #-20]
+ 2931 0340 0230A0E1 		mov	r3, r2
+ 2932 0344 0331A0E1 		mov	r3, r3, asl #2
+ 2933 0348 023083E0 		add	r3, r3, r2
+ 2934 034c 0331A0E1 		mov	r3, r3, asl #2
+ 2935 0350 0320A0E1 		mov	r2, r3
+ 2936 0354 10301BE5 		ldr	r3, [fp, #-16]
+ 2937 0358 032082E0 		add	r2, r2, r3
+ 2938 035c 90349FE5 		ldr	r3, .L41+24
+ 2939 0360 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2940 0364 010053E3 		cmp	r3, #1
+ 2941 0368 2200001A 		bne	.L21
+  77:../bombLogic.c **** 		clear16x16(i*16,j*16);
+ 2942              		.loc 1 77 0
+ 2943 036c 10301BE5 		ldr	r3, [fp, #-16]
+ 2944 0370 0322A0E1 		mov	r2, r3, asl #4
+ 2945 0374 14301BE5 		ldr	r3, [fp, #-20]
+ 2946 0378 0332A0E1 		mov	r3, r3, asl #4
+ 2947 037c 0200A0E1 		mov	r0, r2
+ 2948 0380 0310A0E1 		mov	r1, r3
+ 2949 0384 FEFFFFEB 		bl	clear16x16
+  78:../bombLogic.c **** 		map16x16[j*(320/16) + i] = NoNe;
+ 2950              		.loc 1 78 0
+ 2951 0388 14201BE5 		ldr	r2, [fp, #-20]
+ 2952 038c 0230A0E1 		mov	r3, r2
+ 2953 0390 0331A0E1 		mov	r3, r3, asl #2
+ 2954 0394 023083E0 		add	r3, r3, r2
+ 2955 0398 0331A0E1 		mov	r3, r3, asl #2
+ 2956 039c 0320A0E1 		mov	r2, r3
+ 2957 03a0 10301BE5 		ldr	r3, [fp, #-16]
+ 2958 03a4 032082E0 		add	r2, r2, r3
+ 2959 03a8 44349FE5 		ldr	r3, .L41+24
+ 2960 03ac 0010A0E3 		mov	r1, #0
+ 2961 03b0 021183E7 		str	r1, [r3, r2, asl #2]
+  79:../bombLogic.c **** 
+  80:../bombLogic.c **** 		if(i==exitPosX && j==exitPosY){
+ 2962              		.loc 1 80 0
+ 2963 03b4 3C349FE5 		ldr	r3, .L41+28
+ 2964 03b8 003093E5 		ldr	r3, [r3, #0]
+ 2965 03bc 10201BE5 		ldr	r2, [fp, #-16]
+ 2966 03c0 030052E1 		cmp	r2, r3
+ 2967 03c4 0B00001A 		bne	.L21
+ 2968              		.loc 1 80 0 is_stmt 0 discriminator 1
+ 2969 03c8 2C349FE5 		ldr	r3, .L41+32
+ 2970 03cc 003093E5 		ldr	r3, [r3, #0]
+ 2971 03d0 14201BE5 		ldr	r2, [fp, #-20]
+ 2972 03d4 030052E1 		cmp	r2, r3
+ 2973 03d8 0600001A 		bne	.L21
+  81:../bombLogic.c **** 			drawExit16x16(i*16,j*16);
+ 2974              		.loc 1 81 0 is_stmt 1
+ 2975 03dc 10301BE5 		ldr	r3, [fp, #-16]
+ 2976 03e0 0322A0E1 		mov	r2, r3, asl #4
+ 2977 03e4 14301BE5 		ldr	r3, [fp, #-20]
+ 2978 03e8 0332A0E1 		mov	r3, r3, asl #4
+ 2979 03ec 0200A0E1 		mov	r0, r2
+ 2980 03f0 0310A0E1 		mov	r1, r3
+ 2981 03f4 FEFFFFEB 		bl	drawExit16x16
+ 2982              	.L21:
+  82:../bombLogic.c **** 		}
+  83:../bombLogic.c **** 	}
+  84:../bombLogic.c **** 
+  85:../bombLogic.c **** 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+ 2983              		.loc 1 85 0
+ 2984 03f8 10201BE5 		ldr	r2, [fp, #-16]
+ 2985 03fc 18301BE5 		ldr	r3, [fp, #-24]
+ 2986 0400 030052E1 		cmp	r2, r3
+ 2987 0404 0300001A 		bne	.L22
+ 2988              		.loc 1 85 0 is_stmt 0 discriminator 1
+ 2989 0408 14201BE5 		ldr	r2, [fp, #-20]
+ 2990 040c 1C301BE5 		ldr	r3, [fp, #-28]
+ 2991 0410 030052E1 		cmp	r2, r3
+ 2992 0414 0700000A 		beq	.L23
+ 2993              	.L22:
+ 2994              		.loc 1 85 0 discriminator 2
+ 2995 0418 10201BE5 		ldr	r2, [fp, #-16]
+ 2996 041c 20301BE5 		ldr	r3, [fp, #-32]
+ 2997 0420 030052E1 		cmp	r2, r3
+ 2998 0424 0500001A 		bne	.L24
+ 2999              		.loc 1 85 0 discriminator 1
+ 3000 0428 14201BE5 		ldr	r2, [fp, #-20]
+ 3001 042c 24301BE5 		ldr	r3, [fp, #-36]
+ 3002 0430 030052E1 		cmp	r2, r3
+ 3003 0434 0100001A 		bne	.L24
+ 3004              	.L23:
+  86:../bombLogic.c **** 		gameOver();
+ 3005              		.loc 1 86 0 is_stmt 1
+ 3006 0438 FEFFFFEB 		bl	gameOver
+  87:../bombLogic.c **** 		return;
+ 3007              		.loc 1 87 0
+ 3008 043c E30000EA 		b	.L9
+ 3009              	.L24:
+  88:../bombLogic.c **** 	}
+  89:../bombLogic.c **** 
+  90:../bombLogic.c **** 	//down.
+  91:../bombLogic.c **** 	j = j+2;
+ 3010              		.loc 1 91 0
+ 3011 0440 14301BE5 		ldr	r3, [fp, #-20]
+ 3012 0444 023083E2 		add	r3, r3, #2
+ 3013 0448 14300BE5 		str	r3, [fp, #-20]
+  92:../bombLogic.c **** 	if(map16x16[j*(320/16) + i] == Dirt){
+ 3014              		.loc 1 92 0
+ 3015 044c 14201BE5 		ldr	r2, [fp, #-20]
+ 3016 0450 0230A0E1 		mov	r3, r2
+ 3017 0454 0331A0E1 		mov	r3, r3, asl #2
+ 3018 0458 023083E0 		add	r3, r3, r2
+ 3019 045c 0331A0E1 		mov	r3, r3, asl #2
+ 3020 0460 0320A0E1 		mov	r2, r3
+ 3021 0464 10301BE5 		ldr	r3, [fp, #-16]
+ 3022 0468 032082E0 		add	r2, r2, r3
+ 3023 046c 80339FE5 		ldr	r3, .L41+24
+ 3024 0470 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3025 0474 010053E3 		cmp	r3, #1
+ 3026 0478 2200001A 		bne	.L25
+  93:../bombLogic.c **** 		clear16x16(i*16,j*16);
+ 3027              		.loc 1 93 0
+ 3028 047c 10301BE5 		ldr	r3, [fp, #-16]
+ 3029 0480 0322A0E1 		mov	r2, r3, asl #4
+ 3030 0484 14301BE5 		ldr	r3, [fp, #-20]
+ 3031 0488 0332A0E1 		mov	r3, r3, asl #4
+ 3032 048c 0200A0E1 		mov	r0, r2
+ 3033 0490 0310A0E1 		mov	r1, r3
+ 3034 0494 FEFFFFEB 		bl	clear16x16
+  94:../bombLogic.c **** 		map16x16[j*(320/16) + i] = NoNe;
+ 3035              		.loc 1 94 0
+ 3036 0498 14201BE5 		ldr	r2, [fp, #-20]
+ 3037 049c 0230A0E1 		mov	r3, r2
+ 3038 04a0 0331A0E1 		mov	r3, r3, asl #2
+ 3039 04a4 023083E0 		add	r3, r3, r2
+ 3040 04a8 0331A0E1 		mov	r3, r3, asl #2
+ 3041 04ac 0320A0E1 		mov	r2, r3
+ 3042 04b0 10301BE5 		ldr	r3, [fp, #-16]
+ 3043 04b4 032082E0 		add	r2, r2, r3
+ 3044 04b8 34339FE5 		ldr	r3, .L41+24
+ 3045 04bc 0010A0E3 		mov	r1, #0
+ 3046 04c0 021183E7 		str	r1, [r3, r2, asl #2]
+  95:../bombLogic.c **** 
+  96:../bombLogic.c **** 		if(i==exitPosX && j==exitPosY){
+ 3047              		.loc 1 96 0
+ 3048 04c4 2C339FE5 		ldr	r3, .L41+28
+ 3049 04c8 003093E5 		ldr	r3, [r3, #0]
+ 3050 04cc 10201BE5 		ldr	r2, [fp, #-16]
+ 3051 04d0 030052E1 		cmp	r2, r3
+ 3052 04d4 0B00001A 		bne	.L25
+ 3053              		.loc 1 96 0 is_stmt 0 discriminator 1
+ 3054 04d8 1C339FE5 		ldr	r3, .L41+32
+ 3055 04dc 003093E5 		ldr	r3, [r3, #0]
+ 3056 04e0 14201BE5 		ldr	r2, [fp, #-20]
+ 3057 04e4 030052E1 		cmp	r2, r3
+ 3058 04e8 0600001A 		bne	.L25
+  97:../bombLogic.c **** 			drawExit16x16(i*16,j*16);
+ 3059              		.loc 1 97 0 is_stmt 1
+ 3060 04ec 10301BE5 		ldr	r3, [fp, #-16]
+ 3061 04f0 0322A0E1 		mov	r2, r3, asl #4
+ 3062 04f4 14301BE5 		ldr	r3, [fp, #-20]
+ 3063 04f8 0332A0E1 		mov	r3, r3, asl #4
+ 3064 04fc 0200A0E1 		mov	r0, r2
+ 3065 0500 0310A0E1 		mov	r1, r3
+ 3066 0504 FEFFFFEB 		bl	drawExit16x16
+ 3067              	.L25:
+  98:../bombLogic.c **** 		}
+  99:../bombLogic.c **** 	}
+ 100:../bombLogic.c **** 
+ 101:../bombLogic.c **** 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+ 3068              		.loc 1 101 0
+ 3069 0508 10201BE5 		ldr	r2, [fp, #-16]
+ 3070 050c 18301BE5 		ldr	r3, [fp, #-24]
+ 3071 0510 030052E1 		cmp	r2, r3
+ 3072 0514 0300001A 		bne	.L26
+ 3073              		.loc 1 101 0 is_stmt 0 discriminator 1
+ 3074 0518 14201BE5 		ldr	r2, [fp, #-20]
+ 3075 051c 1C301BE5 		ldr	r3, [fp, #-28]
+ 3076 0520 030052E1 		cmp	r2, r3
+ 3077 0524 0700000A 		beq	.L27
+ 3078              	.L26:
+ 3079              		.loc 1 101 0 discriminator 2
+ 3080 0528 10201BE5 		ldr	r2, [fp, #-16]
+ 3081 052c 20301BE5 		ldr	r3, [fp, #-32]
+ 3082 0530 030052E1 		cmp	r2, r3
+ 3083 0534 0500001A 		bne	.L28
+ 3084              		.loc 1 101 0 discriminator 1
+ 3085 0538 14201BE5 		ldr	r2, [fp, #-20]
+ 3086 053c 24301BE5 		ldr	r3, [fp, #-36]
+ 3087 0540 030052E1 		cmp	r2, r3
+ 3088 0544 0100001A 		bne	.L28
+ 3089              	.L27:
+ 102:../bombLogic.c **** 		gameOver();
+ 3090              		.loc 1 102 0 is_stmt 1
+ 3091 0548 FEFFFFEB 		bl	gameOver
+ 103:../bombLogic.c **** 		return;
+ 3092              		.loc 1 103 0
+ 3093 054c 9F0000EA 		b	.L9
+ 3094              	.L28:
+ 104:../bombLogic.c **** 	}
+ 105:../bombLogic.c **** 
+ 106:../bombLogic.c **** 	//left
+ 107:../bombLogic.c **** 	j--;
+ 3095              		.loc 1 107 0
+ 3096 0550 14301BE5 		ldr	r3, [fp, #-20]
+ 3097 0554 013043E2 		sub	r3, r3, #1
+ 3098 0558 14300BE5 		str	r3, [fp, #-20]
+ 108:../bombLogic.c **** 	i--;
+ 3099              		.loc 1 108 0
+ 3100 055c 10301BE5 		ldr	r3, [fp, #-16]
+ 3101 0560 013043E2 		sub	r3, r3, #1
+ 3102 0564 10300BE5 		str	r3, [fp, #-16]
+ 109:../bombLogic.c **** 	if(map16x16[j*(320/16) + i] == Dirt){
+ 3103              		.loc 1 109 0
+ 3104 0568 14201BE5 		ldr	r2, [fp, #-20]
+ 3105 056c 0230A0E1 		mov	r3, r2
+ 3106 0570 0331A0E1 		mov	r3, r3, asl #2
+ 3107 0574 023083E0 		add	r3, r3, r2
+ 3108 0578 0331A0E1 		mov	r3, r3, asl #2
+ 3109 057c 0320A0E1 		mov	r2, r3
+ 3110 0580 10301BE5 		ldr	r3, [fp, #-16]
+ 3111 0584 032082E0 		add	r2, r2, r3
+ 3112 0588 64329FE5 		ldr	r3, .L41+24
+ 3113 058c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3114 0590 010053E3 		cmp	r3, #1
+ 3115 0594 2200001A 		bne	.L29
+ 110:../bombLogic.c **** 		clear16x16(i*16,j*16);
+ 3116              		.loc 1 110 0
+ 3117 0598 10301BE5 		ldr	r3, [fp, #-16]
+ 3118 059c 0322A0E1 		mov	r2, r3, asl #4
+ 3119 05a0 14301BE5 		ldr	r3, [fp, #-20]
+ 3120 05a4 0332A0E1 		mov	r3, r3, asl #4
+ 3121 05a8 0200A0E1 		mov	r0, r2
+ 3122 05ac 0310A0E1 		mov	r1, r3
+ 3123 05b0 FEFFFFEB 		bl	clear16x16
+ 111:../bombLogic.c **** 		map16x16[j*(320/16) + i] = NoNe;
+ 3124              		.loc 1 111 0
+ 3125 05b4 14201BE5 		ldr	r2, [fp, #-20]
+ 3126 05b8 0230A0E1 		mov	r3, r2
+ 3127 05bc 0331A0E1 		mov	r3, r3, asl #2
+ 3128 05c0 023083E0 		add	r3, r3, r2
+ 3129 05c4 0331A0E1 		mov	r3, r3, asl #2
+ 3130 05c8 0320A0E1 		mov	r2, r3
+ 3131 05cc 10301BE5 		ldr	r3, [fp, #-16]
+ 3132 05d0 032082E0 		add	r2, r2, r3
+ 3133 05d4 18329FE5 		ldr	r3, .L41+24
+ 3134 05d8 0010A0E3 		mov	r1, #0
+ 3135 05dc 021183E7 		str	r1, [r3, r2, asl #2]
+ 112:../bombLogic.c **** 
+ 113:../bombLogic.c **** 		if(i==exitPosX && j==exitPosY){
+ 3136              		.loc 1 113 0
+ 3137 05e0 10329FE5 		ldr	r3, .L41+28
+ 3138 05e4 003093E5 		ldr	r3, [r3, #0]
+ 3139 05e8 10201BE5 		ldr	r2, [fp, #-16]
+ 3140 05ec 030052E1 		cmp	r2, r3
+ 3141 05f0 0B00001A 		bne	.L29
+ 3142              		.loc 1 113 0 is_stmt 0 discriminator 1
+ 3143 05f4 00329FE5 		ldr	r3, .L41+32
+ 3144 05f8 003093E5 		ldr	r3, [r3, #0]
+ 3145 05fc 14201BE5 		ldr	r2, [fp, #-20]
+ 3146 0600 030052E1 		cmp	r2, r3
+ 3147 0604 0600001A 		bne	.L29
+ 114:../bombLogic.c **** 			drawExit16x16(i*16,j*16);
+ 3148              		.loc 1 114 0 is_stmt 1
+ 3149 0608 10301BE5 		ldr	r3, [fp, #-16]
+ 3150 060c 0322A0E1 		mov	r2, r3, asl #4
+ 3151 0610 14301BE5 		ldr	r3, [fp, #-20]
+ 3152 0614 0332A0E1 		mov	r3, r3, asl #4
+ 3153 0618 0200A0E1 		mov	r0, r2
+ 3154 061c 0310A0E1 		mov	r1, r3
+ 3155 0620 FEFFFFEB 		bl	drawExit16x16
+ 3156              	.L29:
+ 115:../bombLogic.c **** 		}
+ 116:../bombLogic.c **** 	}
+ 117:../bombLogic.c **** 
+ 118:../bombLogic.c **** 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+ 3157              		.loc 1 118 0
+ 3158 0624 10201BE5 		ldr	r2, [fp, #-16]
+ 3159 0628 18301BE5 		ldr	r3, [fp, #-24]
+ 3160 062c 030052E1 		cmp	r2, r3
+ 3161 0630 0300001A 		bne	.L30
+ 3162              		.loc 1 118 0 is_stmt 0 discriminator 1
+ 3163 0634 14201BE5 		ldr	r2, [fp, #-20]
+ 3164 0638 1C301BE5 		ldr	r3, [fp, #-28]
+ 3165 063c 030052E1 		cmp	r2, r3
+ 3166 0640 0700000A 		beq	.L31
+ 3167              	.L30:
+ 3168              		.loc 1 118 0 discriminator 2
+ 3169 0644 10201BE5 		ldr	r2, [fp, #-16]
+ 3170 0648 20301BE5 		ldr	r3, [fp, #-32]
+ 3171 064c 030052E1 		cmp	r2, r3
+ 3172 0650 0500001A 		bne	.L32
+ 3173              		.loc 1 118 0 discriminator 1
+ 3174 0654 14201BE5 		ldr	r2, [fp, #-20]
+ 3175 0658 24301BE5 		ldr	r3, [fp, #-36]
+ 3176 065c 030052E1 		cmp	r2, r3
+ 3177 0660 0100001A 		bne	.L32
+ 3178              	.L31:
+ 119:../bombLogic.c **** 		gameOver();
+ 3179              		.loc 1 119 0 is_stmt 1
+ 3180 0664 FEFFFFEB 		bl	gameOver
+ 120:../bombLogic.c **** 		return;
+ 3181              		.loc 1 120 0
+ 3182 0668 580000EA 		b	.L9
+ 3183              	.L32:
+ 121:../bombLogic.c **** 	}
+ 122:../bombLogic.c **** 
+ 123:../bombLogic.c **** 	//right
+ 124:../bombLogic.c **** 	i = i+2;
+ 3184              		.loc 1 124 0
+ 3185 066c 10301BE5 		ldr	r3, [fp, #-16]
+ 3186 0670 023083E2 		add	r3, r3, #2
+ 3187 0674 10300BE5 		str	r3, [fp, #-16]
+ 125:../bombLogic.c **** 	if(map16x16[j*(320/16) + i] == Dirt){
+ 3188              		.loc 1 125 0
+ 3189 0678 14201BE5 		ldr	r2, [fp, #-20]
+ 3190 067c 0230A0E1 		mov	r3, r2
+ 3191 0680 0331A0E1 		mov	r3, r3, asl #2
+ 3192 0684 023083E0 		add	r3, r3, r2
+ 3193 0688 0331A0E1 		mov	r3, r3, asl #2
+ 3194 068c 0320A0E1 		mov	r2, r3
+ 3195 0690 10301BE5 		ldr	r3, [fp, #-16]
+ 3196 0694 032082E0 		add	r2, r2, r3
+ 3197 0698 54319FE5 		ldr	r3, .L41+24
+ 3198 069c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3199 06a0 010053E3 		cmp	r3, #1
+ 3200 06a4 2200001A 		bne	.L33
+ 126:../bombLogic.c **** 		clear16x16(i*16,j*16);
+ 3201              		.loc 1 126 0
+ 3202 06a8 10301BE5 		ldr	r3, [fp, #-16]
+ 3203 06ac 0322A0E1 		mov	r2, r3, asl #4
+ 3204 06b0 14301BE5 		ldr	r3, [fp, #-20]
+ 3205 06b4 0332A0E1 		mov	r3, r3, asl #4
+ 3206 06b8 0200A0E1 		mov	r0, r2
+ 3207 06bc 0310A0E1 		mov	r1, r3
+ 3208 06c0 FEFFFFEB 		bl	clear16x16
+ 127:../bombLogic.c **** 		map16x16[j*(320/16) + i] = NoNe;
+ 3209              		.loc 1 127 0
+ 3210 06c4 14201BE5 		ldr	r2, [fp, #-20]
+ 3211 06c8 0230A0E1 		mov	r3, r2
+ 3212 06cc 0331A0E1 		mov	r3, r3, asl #2
+ 3213 06d0 023083E0 		add	r3, r3, r2
+ 3214 06d4 0331A0E1 		mov	r3, r3, asl #2
+ 3215 06d8 0320A0E1 		mov	r2, r3
+ 3216 06dc 10301BE5 		ldr	r3, [fp, #-16]
+ 3217 06e0 032082E0 		add	r2, r2, r3
+ 3218 06e4 08319FE5 		ldr	r3, .L41+24
+ 3219 06e8 0010A0E3 		mov	r1, #0
+ 3220 06ec 021183E7 		str	r1, [r3, r2, asl #2]
+ 128:../bombLogic.c **** 
+ 129:../bombLogic.c **** 		if(i==exitPosX && j==exitPosY){
+ 3221              		.loc 1 129 0
+ 3222 06f0 00319FE5 		ldr	r3, .L41+28
+ 3223 06f4 003093E5 		ldr	r3, [r3, #0]
+ 3224 06f8 10201BE5 		ldr	r2, [fp, #-16]
+ 3225 06fc 030052E1 		cmp	r2, r3
+ 3226 0700 0B00001A 		bne	.L33
+ 3227              		.loc 1 129 0 is_stmt 0 discriminator 1
+ 3228 0704 F0309FE5 		ldr	r3, .L41+32
+ 3229 0708 003093E5 		ldr	r3, [r3, #0]
+ 3230 070c 14201BE5 		ldr	r2, [fp, #-20]
+ 3231 0710 030052E1 		cmp	r2, r3
+ 3232 0714 0600001A 		bne	.L33
+ 130:../bombLogic.c **** 			drawExit16x16(i*16,j*16);
+ 3233              		.loc 1 130 0 is_stmt 1
+ 3234 0718 10301BE5 		ldr	r3, [fp, #-16]
+ 3235 071c 0322A0E1 		mov	r2, r3, asl #4
+ 3236 0720 14301BE5 		ldr	r3, [fp, #-20]
+ 3237 0724 0332A0E1 		mov	r3, r3, asl #4
+ 3238 0728 0200A0E1 		mov	r0, r2
+ 3239 072c 0310A0E1 		mov	r1, r3
+ 3240 0730 FEFFFFEB 		bl	drawExit16x16
+ 3241              	.L33:
+ 131:../bombLogic.c **** 		}
+ 132:../bombLogic.c **** 	}
+ 133:../bombLogic.c **** 
+ 134:../bombLogic.c **** 	if((i==playerTopLeftX && j==playerTopLeftY) || (i==playerBotRigthX && j==playerBotRigthY)){
+ 3242              		.loc 1 134 0
+ 3243 0734 10201BE5 		ldr	r2, [fp, #-16]
+ 3244 0738 18301BE5 		ldr	r3, [fp, #-24]
+ 3245 073c 030052E1 		cmp	r2, r3
+ 3246 0740 0300001A 		bne	.L34
+ 3247              		.loc 1 134 0 is_stmt 0 discriminator 1
+ 3248 0744 14201BE5 		ldr	r2, [fp, #-20]
+ 3249 0748 1C301BE5 		ldr	r3, [fp, #-28]
+ 3250 074c 030052E1 		cmp	r2, r3
+ 3251 0750 0700000A 		beq	.L35
+ 3252              	.L34:
+ 3253              		.loc 1 134 0 discriminator 2
+ 3254 0754 10201BE5 		ldr	r2, [fp, #-16]
+ 3255 0758 20301BE5 		ldr	r3, [fp, #-32]
+ 3256 075c 030052E1 		cmp	r2, r3
+ 3257 0760 0500001A 		bne	.L36
+ 3258              		.loc 1 134 0 discriminator 1
+ 3259 0764 14201BE5 		ldr	r2, [fp, #-20]
+ 3260 0768 24301BE5 		ldr	r3, [fp, #-36]
+ 3261 076c 030052E1 		cmp	r2, r3
+ 3262 0770 0100001A 		bne	.L36
+ 3263              	.L35:
+ 135:../bombLogic.c **** 		gameOver();
+ 3264              		.loc 1 135 0 is_stmt 1
+ 3265 0774 FEFFFFEB 		bl	gameOver
+ 136:../bombLogic.c **** 		return;
+ 3266              		.loc 1 136 0
+ 3267 0778 140000EA 		b	.L9
+ 3268              	.L36:
+ 137:../bombLogic.c **** 	}
+ 138:../bombLogic.c **** 
+ 139:../bombLogic.c **** 	if(mineOrFriends == 0){
+ 3269              		.loc 1 139 0
+ 3270 077c 28301BE5 		ldr	r3, [fp, #-40]
+ 3271 0780 000053E3 		cmp	r3, #0
+ 3272 0784 0600001A 		bne	.L37
+ 140:../bombLogic.c **** 		bombPosX = -1;
+ 3273              		.loc 1 140 0
+ 3274 0788 4C309FE5 		ldr	r3, .L41
+ 3275 078c 0020E0E3 		mvn	r2, #0
+ 3276 0790 002083E5 		str	r2, [r3, #0]
+ 141:../bombLogic.c **** 		bombPosY = -1;
+ 3277              		.loc 1 141 0
+ 3278 0794 44309FE5 		ldr	r3, .L41+4
+ 3279 0798 0020E0E3 		mvn	r2, #0
+ 3280 079c 002083E5 		str	r2, [r3, #0]
+ 3281 07a0 050000EA 		b	.L38
+ 3282              	.L37:
+ 142:../bombLogic.c **** 	}else{
+ 143:../bombLogic.c **** 		fbombPosX = -1;
+ 3283              		.loc 1 143 0
+ 3284 07a4 38309FE5 		ldr	r3, .L41+8
+ 3285 07a8 0020E0E3 		mvn	r2, #0
+ 3286 07ac 002083E5 		str	r2, [r3, #0]
+ 144:../bombLogic.c **** 		fbombPosY = -1;
+ 3287              		.loc 1 144 0
+ 3288 07b0 30309FE5 		ldr	r3, .L41+12
+ 3289 07b4 0020E0E3 		mvn	r2, #0
+ 3290 07b8 002083E5 		str	r2, [r3, #0]
+ 3291              	.L38:
+ 145:../bombLogic.c **** 	}
+ 146:../bombLogic.c **** 	redrawChanging();
+ 3292              		.loc 1 146 0
+ 3293 07bc FEFFFFEB 		bl	redrawChanging
+ 3294 07c0 020000EA 		b	.L9
+ 3295              	.L39:
+  40:../bombLogic.c **** 			return;
+ 3296              		.loc 1 40 0
+ 3297 07c4 0000A0E1 		mov	r0, r0	@ nop
+ 3298 07c8 000000EA 		b	.L9
+ 3299              	.L40:
+  45:../bombLogic.c **** 			return;
+ 3300              		.loc 1 45 0
+ 3301 07cc 0000A0E1 		mov	r0, r0	@ nop
+ 3302              	.L9:
+ 147:../bombLogic.c **** }
+ 3303              		.loc 1 147 0
+ 3304 07d0 0CD04BE2 		sub	sp, fp, #12
+ 3305 07d4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3306 07d8 1EFF2FE1 		bx	lr
+ 3307              	.L42:
+ 3308              		.align	2
+ 3309              	.L41:
+ 3310 07dc 00000000 		.word	bombPosX
+ 3311 07e0 00000000 		.word	bombPosY
+ 3312 07e4 00000000 		.word	fbombPosX
+ 3313 07e8 00000000 		.word	fbombPosY
+ 3314 07ec 00000000 		.word	playerPosX
+ 3315 07f0 00000000 		.word	playerPosY
+ 3316 07f4 00000000 		.word	map16x16
+ 3317 07f8 00000000 		.word	exitPosX
+ 3318 07fc 00000000 		.word	exitPosY
+ 3319              		.cfi_endproc
+ 3320              	.LFE1:
+ 3322              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 bombLogic.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2608   .data:00000000 bombPosX
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2605   .data:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2614   .data:00000004 bombPosY
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2620   .data:00000008 fbombPosX
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2626   .data:0000000c fbombPosY
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2629   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2632   .text:00000000 setBomb
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2735   .text:00000114 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2741   .text:00000120 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:2744   .text:00000120 boomBomb
+C:\Users\USUARI~1\AppData\Local\Temp\ccY3Qdri.s:3310   .text:000007dc $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+enviarPosBomb
+ledsSetBlink
+redrawChanging
+enviarPosBombBoom
+clear16x16
+gameOver
+drawExit16x16
+playerPosX
+playerPosY
+map16x16
+exitPosX
+exitPosY

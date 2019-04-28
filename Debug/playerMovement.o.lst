@@ -1,0 +1,1166 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"playerMovement.c"
+  21              	.Ltext0:
+  22              		.file 1 "../playerMovement.c"
+ 2617              		.align	2
+ 2620              	oldPlayerPosX:
+ 2621 0000 FFFFFFFF 		.word	-1
+ 2622              		.global	oldPlayerPosY
+ 2623              		.align	2
+ 2626              	oldPlayerPosY:
+ 2627 0004 FFFFFFFF 		.word	-1
+ 2628              		.global	playerPosX
+ 2629              		.align	2
+ 2632              	playerPosX:
+ 2633 0008 FFFFFFFF 		.word	-1
+ 2634              		.global	playerPosY
+ 2635              		.align	2
+ 2638              	playerPosY:
+ 2639 000c FFFFFFFF 		.word	-1
+ 2640              		.text
+ 2641              		.align	2
+ 2642              		.global	initPlayerPosition16x16
+ 2644              	initPlayerPosition16x16:
+ 2645              	.LFB0:
+   1:../playerMovement.c **** #include "playerMovement.h"
+   2:../playerMovement.c **** 
+   3:../playerMovement.c **** extern int map16x16[];
+   4:../playerMovement.c **** extern int exitPosX;
+   5:../playerMovement.c **** extern int exitPosY;
+   6:../playerMovement.c **** 
+   7:../playerMovement.c **** extern int foldPlayerPosX;
+   8:../playerMovement.c **** extern int foldPlayerPosY;
+   9:../playerMovement.c **** extern int fplayerPosX;
+  10:../playerMovement.c **** extern int fplayerPosY;
+  11:../playerMovement.c **** 
+  12:../playerMovement.c **** int oldPlayerPosX = -1;
+  13:../playerMovement.c **** int oldPlayerPosY = -1;
+  14:../playerMovement.c **** int playerPosX = -1;
+  15:../playerMovement.c **** int playerPosY = -1;
+  16:../playerMovement.c **** 
+  17:../playerMovement.c **** extern int contSp;
+  18:../playerMovement.c **** 
+  19:../playerMovement.c **** extern int player1;
+  20:../playerMovement.c **** extern int player2;
+  21:../playerMovement.c **** 
+  22:../playerMovement.c **** void initPlayerPosition16x16(int isMine){
+ 2646              		.loc 1 22 0
+ 2647              		.cfi_startproc
+ 2648              		@ Function supports interworking.
+ 2649              		@ args = 0, pretend = 0, frame = 32
+ 2650              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2651 0000 0DC0A0E1 		mov	ip, sp
+ 2652              	.LCFI0:
+ 2653              		.cfi_def_cfa_register 12
+ 2654 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2655 0008 04B04CE2 		sub	fp, ip, #4
+ 2656              		.cfi_offset 14, -8
+ 2657              		.cfi_offset 13, -12
+ 2658              		.cfi_offset 11, -16
+ 2659              	.LCFI1:
+ 2660              		.cfi_def_cfa 11, 4
+ 2661 000c 20D04DE2 		sub	sp, sp, #32
+ 2662 0010 28000BE5 		str	r0, [fp, #-40]
+ 2663 0014 000000EA 		b	.L4
+ 2664              	.L11:
+  23:../playerMovement.c **** 	int pos1X, pos1Y, pos2X, pos2Y;
+  24:../playerMovement.c **** 	int i, j;
+  25:../playerMovement.c **** 	while(1){
+  26:../playerMovement.c **** 		i = rand() % (320/16);
+  27:../playerMovement.c **** 		j = rand() % (240/16);
+  28:../playerMovement.c **** 		if(isValidPos(i, j)){
+  29:../playerMovement.c **** 			pos1X = i;
+  30:../playerMovement.c **** 			pos1Y = j;
+  31:../playerMovement.c **** 			break;
+  32:../playerMovement.c **** 		}
+  33:../playerMovement.c **** 	}
+ 2665              		.loc 1 33 0
+ 2666 0018 0000A0E1 		mov	r0, r0	@ nop
+ 2667              	.L4:
+  26:../playerMovement.c **** 		i = rand() % (320/16);
+ 2668              		.loc 1 26 0
+ 2669 001c FEFFFFEB 		bl	rand
+ 2670 0020 0020A0E1 		mov	r2, r0
+ 2671 0024 90329FE5 		ldr	r3, .L14
+ 2672 0028 9213C3E0 		smull	r1, r3, r2, r3
+ 2673 002c C311A0E1 		mov	r1, r3, asr #3
+ 2674 0030 C23FA0E1 		mov	r3, r2, asr #31
+ 2675 0034 011063E0 		rsb	r1, r3, r1
+ 2676 0038 0130A0E1 		mov	r3, r1
+ 2677 003c 0331A0E1 		mov	r3, r3, asl #2
+ 2678 0040 013083E0 		add	r3, r3, r1
+ 2679 0044 0331A0E1 		mov	r3, r3, asl #2
+ 2680 0048 023063E0 		rsb	r3, r3, r2
+ 2681 004c 10300BE5 		str	r3, [fp, #-16]
+  27:../playerMovement.c **** 		j = rand() % (240/16);
+ 2682              		.loc 1 27 0
+ 2683 0050 FEFFFFEB 		bl	rand
+ 2684 0054 0020A0E1 		mov	r2, r0
+ 2685 0058 60329FE5 		ldr	r3, .L14+4
+ 2686 005c 9213C3E0 		smull	r1, r3, r2, r3
+ 2687 0060 023083E0 		add	r3, r3, r2
+ 2688 0064 C311A0E1 		mov	r1, r3, asr #3
+ 2689 0068 C23FA0E1 		mov	r3, r2, asr #31
+ 2690 006c 011063E0 		rsb	r1, r3, r1
+ 2691 0070 0130A0E1 		mov	r3, r1
+ 2692 0074 0332A0E1 		mov	r3, r3, asl #4
+ 2693 0078 033061E0 		rsb	r3, r1, r3
+ 2694 007c 023063E0 		rsb	r3, r3, r2
+ 2695 0080 14300BE5 		str	r3, [fp, #-20]
+  28:../playerMovement.c **** 		if(isValidPos(i, j)){
+ 2696              		.loc 1 28 0
+ 2697 0084 10001BE5 		ldr	r0, [fp, #-16]
+ 2698 0088 14101BE5 		ldr	r1, [fp, #-20]
+ 2699 008c FEFFFFEB 		bl	isValidPos
+ 2700 0090 0030A0E1 		mov	r3, r0
+ 2701 0094 000053E3 		cmp	r3, #0
+ 2702 0098 DEFFFF0A 		beq	.L11
+  29:../playerMovement.c **** 			pos1X = i;
+ 2703              		.loc 1 29 0
+ 2704 009c 10301BE5 		ldr	r3, [fp, #-16]
+ 2705 00a0 18300BE5 		str	r3, [fp, #-24]
+  30:../playerMovement.c **** 			pos1Y = j;
+ 2706              		.loc 1 30 0
+ 2707 00a4 14301BE5 		ldr	r3, [fp, #-20]
+ 2708 00a8 1C300BE5 		str	r3, [fp, #-28]
+  31:../playerMovement.c **** 			break;
+ 2709              		.loc 1 31 0
+ 2710 00ac 0000A0E1 		mov	r0, r0	@ nop
+ 2711 00b0 020000EA 		b	.L3
+ 2712              	.L12:
+  34:../playerMovement.c **** 	while(1){
+  35:../playerMovement.c **** 		i = rand() % (320/16);
+  36:../playerMovement.c **** 		j = rand() % (240/16);
+  37:../playerMovement.c **** 		if(isValidPos(i, j) && ((pos1X != i) || (pos1X != j))){
+  38:../playerMovement.c **** 			pos2X = i;
+  39:../playerMovement.c **** 			pos2Y = j;
+  40:../playerMovement.c **** 			break;
+  41:../playerMovement.c **** 		}
+  42:../playerMovement.c **** 	}
+ 2713              		.loc 1 42 0
+ 2714 00b4 0000A0E1 		mov	r0, r0	@ nop
+ 2715 00b8 000000EA 		b	.L3
+ 2716              	.L13:
+ 2717 00bc 0000A0E1 		mov	r0, r0	@ nop
+ 2718              	.L3:
+  35:../playerMovement.c **** 		i = rand() % (320/16);
+ 2719              		.loc 1 35 0
+ 2720 00c0 FEFFFFEB 		bl	rand
+ 2721 00c4 0020A0E1 		mov	r2, r0
+ 2722 00c8 EC319FE5 		ldr	r3, .L14
+ 2723 00cc 9213C3E0 		smull	r1, r3, r2, r3
+ 2724 00d0 C311A0E1 		mov	r1, r3, asr #3
+ 2725 00d4 C23FA0E1 		mov	r3, r2, asr #31
+ 2726 00d8 011063E0 		rsb	r1, r3, r1
+ 2727 00dc 0130A0E1 		mov	r3, r1
+ 2728 00e0 0331A0E1 		mov	r3, r3, asl #2
+ 2729 00e4 013083E0 		add	r3, r3, r1
+ 2730 00e8 0331A0E1 		mov	r3, r3, asl #2
+ 2731 00ec 023063E0 		rsb	r3, r3, r2
+ 2732 00f0 10300BE5 		str	r3, [fp, #-16]
+  36:../playerMovement.c **** 		j = rand() % (240/16);
+ 2733              		.loc 1 36 0
+ 2734 00f4 FEFFFFEB 		bl	rand
+ 2735 00f8 0020A0E1 		mov	r2, r0
+ 2736 00fc BC319FE5 		ldr	r3, .L14+4
+ 2737 0100 9213C3E0 		smull	r1, r3, r2, r3
+ 2738 0104 023083E0 		add	r3, r3, r2
+ 2739 0108 C311A0E1 		mov	r1, r3, asr #3
+ 2740 010c C23FA0E1 		mov	r3, r2, asr #31
+ 2741 0110 011063E0 		rsb	r1, r3, r1
+ 2742 0114 0130A0E1 		mov	r3, r1
+ 2743 0118 0332A0E1 		mov	r3, r3, asl #4
+ 2744 011c 033061E0 		rsb	r3, r1, r3
+ 2745 0120 023063E0 		rsb	r3, r3, r2
+ 2746 0124 14300BE5 		str	r3, [fp, #-20]
+  37:../playerMovement.c **** 		if(isValidPos(i, j) && ((pos1X != i) || (pos1X != j))){
+ 2747              		.loc 1 37 0
+ 2748 0128 10001BE5 		ldr	r0, [fp, #-16]
+ 2749 012c 14101BE5 		ldr	r1, [fp, #-20]
+ 2750 0130 FEFFFFEB 		bl	isValidPos
+ 2751 0134 0030A0E1 		mov	r3, r0
+ 2752 0138 000053E3 		cmp	r3, #0
+ 2753 013c DCFFFF0A 		beq	.L12
+  37:../playerMovement.c **** 		if(isValidPos(i, j) && ((pos1X != i) || (pos1X != j))){
+ 2754              		.loc 1 37 0 is_stmt 0 discriminator 1
+ 2755 0140 18201BE5 		ldr	r2, [fp, #-24]
+ 2756 0144 10301BE5 		ldr	r3, [fp, #-16]
+ 2757 0148 030052E1 		cmp	r2, r3
+ 2758 014c 0300001A 		bne	.L6
+ 2759 0150 18201BE5 		ldr	r2, [fp, #-24]
+ 2760 0154 14301BE5 		ldr	r3, [fp, #-20]
+ 2761 0158 030052E1 		cmp	r2, r3
+ 2762 015c D6FFFF0A 		beq	.L13
+ 2763              	.L6:
+  38:../playerMovement.c **** 			pos2X = i;
+ 2764              		.loc 1 38 0 is_stmt 1
+ 2765 0160 10301BE5 		ldr	r3, [fp, #-16]
+ 2766 0164 20300BE5 		str	r3, [fp, #-32]
+  39:../playerMovement.c **** 			pos2Y = j;
+ 2767              		.loc 1 39 0
+ 2768 0168 14301BE5 		ldr	r3, [fp, #-20]
+ 2769 016c 24300BE5 		str	r3, [fp, #-36]
+  43:../playerMovement.c **** 
+  44:../playerMovement.c **** 	if (isMine){
+ 2770              		.loc 1 44 0
+ 2771 0170 28301BE5 		ldr	r3, [fp, #-40]
+ 2772 0174 000053E3 		cmp	r3, #0
+ 2773 0178 2600000A 		beq	.L10
+ 2774              	.L7:
+  45:../playerMovement.c **** 		playerPosX = pos1X*16;
+ 2775              		.loc 1 45 0
+ 2776 017c 18301BE5 		ldr	r3, [fp, #-24]
+ 2777 0180 0322A0E1 		mov	r2, r3, asl #4
+ 2778 0184 38319FE5 		ldr	r3, .L14+8
+ 2779 0188 002083E5 		str	r2, [r3, #0]
+  46:../playerMovement.c **** 		playerPosY = pos1Y*16;
+ 2780              		.loc 1 46 0
+ 2781 018c 1C301BE5 		ldr	r3, [fp, #-28]
+ 2782 0190 0322A0E1 		mov	r2, r3, asl #4
+ 2783 0194 2C319FE5 		ldr	r3, .L14+12
+ 2784 0198 002083E5 		str	r2, [r3, #0]
+  47:../playerMovement.c **** 		oldPlayerPosY = playerPosY;
+ 2785              		.loc 1 47 0
+ 2786 019c 24319FE5 		ldr	r3, .L14+12
+ 2787 01a0 002093E5 		ldr	r2, [r3, #0]
+ 2788 01a4 20319FE5 		ldr	r3, .L14+16
+ 2789 01a8 002083E5 		str	r2, [r3, #0]
+  48:../playerMovement.c **** 		oldPlayerPosX = playerPosX;
+ 2790              		.loc 1 48 0
+ 2791 01ac 10319FE5 		ldr	r3, .L14+8
+ 2792 01b0 002093E5 		ldr	r2, [r3, #0]
+ 2793 01b4 14319FE5 		ldr	r3, .L14+20
+ 2794 01b8 002083E5 		str	r2, [r3, #0]
+  49:../playerMovement.c **** 
+  50:../playerMovement.c **** 		fplayerPosX = pos2X*16;
+ 2795              		.loc 1 50 0
+ 2796 01bc 20301BE5 		ldr	r3, [fp, #-32]
+ 2797 01c0 0322A0E1 		mov	r2, r3, asl #4
+ 2798 01c4 08319FE5 		ldr	r3, .L14+24
+ 2799 01c8 002083E5 		str	r2, [r3, #0]
+  51:../playerMovement.c **** 		fplayerPosY = pos2Y*16;
+ 2800              		.loc 1 51 0
+ 2801 01cc 24301BE5 		ldr	r3, [fp, #-36]
+ 2802 01d0 0322A0E1 		mov	r2, r3, asl #4
+ 2803 01d4 FC309FE5 		ldr	r3, .L14+28
+ 2804 01d8 002083E5 		str	r2, [r3, #0]
+  52:../playerMovement.c **** 		foldPlayerPosY = fplayerPosY;
+ 2805              		.loc 1 52 0
+ 2806 01dc F4309FE5 		ldr	r3, .L14+28
+ 2807 01e0 002093E5 		ldr	r2, [r3, #0]
+ 2808 01e4 F0309FE5 		ldr	r3, .L14+32
+ 2809 01e8 002083E5 		str	r2, [r3, #0]
+  53:../playerMovement.c **** 		foldPlayerPosX = fplayerPosX;
+ 2810              		.loc 1 53 0
+ 2811 01ec E0309FE5 		ldr	r3, .L14+24
+ 2812 01f0 002093E5 		ldr	r2, [r3, #0]
+ 2813 01f4 E4309FE5 		ldr	r3, .L14+36
+ 2814 01f8 002083E5 		str	r2, [r3, #0]
+  54:../playerMovement.c **** 
+  55:../playerMovement.c **** 		player1 = 0;
+ 2815              		.loc 1 55 0
+ 2816 01fc E0309FE5 		ldr	r3, .L14+40
+ 2817 0200 0020A0E3 		mov	r2, #0
+ 2818 0204 002083E5 		str	r2, [r3, #0]
+  56:../playerMovement.c **** 		player2 = 1;
+ 2819              		.loc 1 56 0
+ 2820 0208 D8309FE5 		ldr	r3, .L14+44
+ 2821 020c 0120A0E3 		mov	r2, #1
+ 2822 0210 002083E5 		str	r2, [r3, #0]
+ 2823 0214 250000EA 		b	.L1
+ 2824              	.L10:
+  57:../playerMovement.c **** 	}else{
+  58:../playerMovement.c **** 		playerPosX = pos2X*16;
+ 2825              		.loc 1 58 0
+ 2826 0218 20301BE5 		ldr	r3, [fp, #-32]
+ 2827 021c 0322A0E1 		mov	r2, r3, asl #4
+ 2828 0220 9C309FE5 		ldr	r3, .L14+8
+ 2829 0224 002083E5 		str	r2, [r3, #0]
+  59:../playerMovement.c **** 		playerPosY = pos2Y*16;
+ 2830              		.loc 1 59 0
+ 2831 0228 24301BE5 		ldr	r3, [fp, #-36]
+ 2832 022c 0322A0E1 		mov	r2, r3, asl #4
+ 2833 0230 90309FE5 		ldr	r3, .L14+12
+ 2834 0234 002083E5 		str	r2, [r3, #0]
+  60:../playerMovement.c **** 		oldPlayerPosY = playerPosY;
+ 2835              		.loc 1 60 0
+ 2836 0238 88309FE5 		ldr	r3, .L14+12
+ 2837 023c 002093E5 		ldr	r2, [r3, #0]
+ 2838 0240 84309FE5 		ldr	r3, .L14+16
+ 2839 0244 002083E5 		str	r2, [r3, #0]
+  61:../playerMovement.c **** 		oldPlayerPosX = playerPosX;
+ 2840              		.loc 1 61 0
+ 2841 0248 74309FE5 		ldr	r3, .L14+8
+ 2842 024c 002093E5 		ldr	r2, [r3, #0]
+ 2843 0250 78309FE5 		ldr	r3, .L14+20
+ 2844 0254 002083E5 		str	r2, [r3, #0]
+  62:../playerMovement.c **** 
+  63:../playerMovement.c **** 		fplayerPosX = pos1X*16;
+ 2845              		.loc 1 63 0
+ 2846 0258 18301BE5 		ldr	r3, [fp, #-24]
+ 2847 025c 0322A0E1 		mov	r2, r3, asl #4
+ 2848 0260 6C309FE5 		ldr	r3, .L14+24
+ 2849 0264 002083E5 		str	r2, [r3, #0]
+  64:../playerMovement.c **** 		fplayerPosY = pos1Y*16;
+ 2850              		.loc 1 64 0
+ 2851 0268 1C301BE5 		ldr	r3, [fp, #-28]
+ 2852 026c 0322A0E1 		mov	r2, r3, asl #4
+ 2853 0270 60309FE5 		ldr	r3, .L14+28
+ 2854 0274 002083E5 		str	r2, [r3, #0]
+  65:../playerMovement.c **** 		foldPlayerPosY = fplayerPosY;
+ 2855              		.loc 1 65 0
+ 2856 0278 58309FE5 		ldr	r3, .L14+28
+ 2857 027c 002093E5 		ldr	r2, [r3, #0]
+ 2858 0280 54309FE5 		ldr	r3, .L14+32
+ 2859 0284 002083E5 		str	r2, [r3, #0]
+  66:../playerMovement.c **** 		foldPlayerPosX = fplayerPosX;
+ 2860              		.loc 1 66 0
+ 2861 0288 44309FE5 		ldr	r3, .L14+24
+ 2862 028c 002093E5 		ldr	r2, [r3, #0]
+ 2863 0290 48309FE5 		ldr	r3, .L14+36
+ 2864 0294 002083E5 		str	r2, [r3, #0]
+  67:../playerMovement.c **** 
+  68:../playerMovement.c **** 		player1 = 1;
+ 2865              		.loc 1 68 0
+ 2866 0298 44309FE5 		ldr	r3, .L14+40
+ 2867 029c 0120A0E3 		mov	r2, #1
+ 2868 02a0 002083E5 		str	r2, [r3, #0]
+  69:../playerMovement.c **** 		player2 = 0;
+ 2869              		.loc 1 69 0
+ 2870 02a4 3C309FE5 		ldr	r3, .L14+44
+ 2871 02a8 0020A0E3 		mov	r2, #0
+ 2872 02ac 002083E5 		str	r2, [r3, #0]
+ 2873              	.L1:
+  70:../playerMovement.c **** 	}
+  71:../playerMovement.c **** }
+ 2874              		.loc 1 71 0
+ 2875 02b0 0CD04BE2 		sub	sp, fp, #12
+ 2876 02b4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2877 02b8 1EFF2FE1 		bx	lr
+ 2878              	.L15:
+ 2879              		.align	2
+ 2880              	.L14:
+ 2881 02bc 67666666 		.word	1717986919
+ 2882 02c0 89888888 		.word	-2004318071
+ 2883 02c4 00000000 		.word	playerPosX
+ 2884 02c8 00000000 		.word	playerPosY
+ 2885 02cc 00000000 		.word	oldPlayerPosY
+ 2886 02d0 00000000 		.word	oldPlayerPosX
+ 2887 02d4 00000000 		.word	fplayerPosX
+ 2888 02d8 00000000 		.word	fplayerPosY
+ 2889 02dc 00000000 		.word	foldPlayerPosY
+ 2890 02e0 00000000 		.word	foldPlayerPosX
+ 2891 02e4 00000000 		.word	player1
+ 2892 02e8 00000000 		.word	player2
+ 2893              		.cfi_endproc
+ 2894              	.LFE0:
+ 2896              		.align	2
+ 2897              		.global	isValidPos
+ 2899              	isValidPos:
+ 2900              	.LFB1:
+  72:../playerMovement.c **** 
+  73:../playerMovement.c **** int isValidPos(int x, int y){
+ 2901              		.loc 1 73 0
+ 2902              		.cfi_startproc
+ 2903              		@ Function supports interworking.
+ 2904              		@ args = 0, pretend = 0, frame = 16
+ 2905              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2906 02ec 0DC0A0E1 		mov	ip, sp
+ 2907              	.LCFI2:
+ 2908              		.cfi_def_cfa_register 12
+ 2909 02f0 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2910 02f4 04B04CE2 		sub	fp, ip, #4
+ 2911              		.cfi_offset 14, -8
+ 2912              		.cfi_offset 13, -12
+ 2913              		.cfi_offset 11, -16
+ 2914              	.LCFI3:
+ 2915              		.cfi_def_cfa 11, 4
+ 2916 02f8 10D04DE2 		sub	sp, sp, #16
+ 2917 02fc 18000BE5 		str	r0, [fp, #-24]
+ 2918 0300 1C100BE5 		str	r1, [fp, #-28]
+  74:../playerMovement.c **** 	int freeNeighbors = 0;
+ 2919              		.loc 1 74 0
+ 2920 0304 0030A0E3 		mov	r3, #0
+ 2921 0308 10300BE5 		str	r3, [fp, #-16]
+  75:../playerMovement.c **** 	if(map16x16[y*(320/16) + x] != NoNe)
+ 2922              		.loc 1 75 0
+ 2923 030c 1C201BE5 		ldr	r2, [fp, #-28]
+ 2924 0310 0230A0E1 		mov	r3, r2
+ 2925 0314 0331A0E1 		mov	r3, r3, asl #2
+ 2926 0318 023083E0 		add	r3, r3, r2
+ 2927 031c 0331A0E1 		mov	r3, r3, asl #2
+ 2928 0320 0320A0E1 		mov	r2, r3
+ 2929 0324 18301BE5 		ldr	r3, [fp, #-24]
+ 2930 0328 032082E0 		add	r2, r2, r3
+ 2931 032c 78319FE5 		ldr	r3, .L24
+ 2932 0330 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2933 0334 000053E3 		cmp	r3, #0
+ 2934 0338 0100000A 		beq	.L17
+  76:../playerMovement.c **** 		return 0;
+ 2935              		.loc 1 76 0
+ 2936 033c 0030A0E3 		mov	r3, #0
+ 2937 0340 550000EA 		b	.L18
+ 2938              	.L17:
+  77:../playerMovement.c **** 	if (x-1 >= 0)
+ 2939              		.loc 1 77 0
+ 2940 0344 18301BE5 		ldr	r3, [fp, #-24]
+ 2941 0348 013043E2 		sub	r3, r3, #1
+ 2942 034c 000053E3 		cmp	r3, #0
+ 2943 0350 0F0000BA 		blt	.L19
+  78:../playerMovement.c **** 		if (map16x16[y*(320/16) + x -1] == NoNe){
+ 2944              		.loc 1 78 0
+ 2945 0354 1C201BE5 		ldr	r2, [fp, #-28]
+ 2946 0358 0230A0E1 		mov	r3, r2
+ 2947 035c 0331A0E1 		mov	r3, r3, asl #2
+ 2948 0360 023083E0 		add	r3, r3, r2
+ 2949 0364 0331A0E1 		mov	r3, r3, asl #2
+ 2950 0368 0320A0E1 		mov	r2, r3
+ 2951 036c 18301BE5 		ldr	r3, [fp, #-24]
+ 2952 0370 033082E0 		add	r3, r2, r3
+ 2953 0374 012043E2 		sub	r2, r3, #1
+ 2954 0378 2C319FE5 		ldr	r3, .L24
+ 2955 037c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2956 0380 000053E3 		cmp	r3, #0
+ 2957 0384 0200001A 		bne	.L19
+  79:../playerMovement.c **** 			freeNeighbors += 1;
+ 2958              		.loc 1 79 0
+ 2959 0388 10301BE5 		ldr	r3, [fp, #-16]
+ 2960 038c 013083E2 		add	r3, r3, #1
+ 2961 0390 10300BE5 		str	r3, [fp, #-16]
+ 2962              	.L19:
+  80:../playerMovement.c **** 		}
+  81:../playerMovement.c **** 	if (x+1 < 320/16)
+ 2963              		.loc 1 81 0
+ 2964 0394 18301BE5 		ldr	r3, [fp, #-24]
+ 2965 0398 013083E2 		add	r3, r3, #1
+ 2966 039c 130053E3 		cmp	r3, #19
+ 2967 03a0 0F0000CA 		bgt	.L20
+  82:../playerMovement.c **** 		if (map16x16[y*(320/16) + x +1] == NoNe){
+ 2968              		.loc 1 82 0
+ 2969 03a4 1C201BE5 		ldr	r2, [fp, #-28]
+ 2970 03a8 0230A0E1 		mov	r3, r2
+ 2971 03ac 0331A0E1 		mov	r3, r3, asl #2
+ 2972 03b0 023083E0 		add	r3, r3, r2
+ 2973 03b4 0331A0E1 		mov	r3, r3, asl #2
+ 2974 03b8 0320A0E1 		mov	r2, r3
+ 2975 03bc 18301BE5 		ldr	r3, [fp, #-24]
+ 2976 03c0 033082E0 		add	r3, r2, r3
+ 2977 03c4 012083E2 		add	r2, r3, #1
+ 2978 03c8 DC309FE5 		ldr	r3, .L24
+ 2979 03cc 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 2980 03d0 000053E3 		cmp	r3, #0
+ 2981 03d4 0200001A 		bne	.L20
+  83:../playerMovement.c **** 			freeNeighbors += 1;
+ 2982              		.loc 1 83 0
+ 2983 03d8 10301BE5 		ldr	r3, [fp, #-16]
+ 2984 03dc 013083E2 		add	r3, r3, #1
+ 2985 03e0 10300BE5 		str	r3, [fp, #-16]
+ 2986              	.L20:
+  84:../playerMovement.c **** 		}
+  85:../playerMovement.c **** 	if (y-1 >= 0)
+ 2987              		.loc 1 85 0
+ 2988 03e4 1C301BE5 		ldr	r3, [fp, #-28]
+ 2989 03e8 013043E2 		sub	r3, r3, #1
+ 2990 03ec 000053E3 		cmp	r3, #0
+ 2991 03f0 0F0000BA 		blt	.L21
+  86:../playerMovement.c **** 		if (map16x16[(y-1)*(320/16) + x] == NoNe){
+ 2992              		.loc 1 86 0
+ 2993 03f4 1C301BE5 		ldr	r3, [fp, #-28]
+ 2994 03f8 012043E2 		sub	r2, r3, #1
+ 2995 03fc 0230A0E1 		mov	r3, r2
+ 2996 0400 0331A0E1 		mov	r3, r3, asl #2
+ 2997 0404 023083E0 		add	r3, r3, r2
+ 2998 0408 0331A0E1 		mov	r3, r3, asl #2
+ 2999 040c 0320A0E1 		mov	r2, r3
+ 3000 0410 18301BE5 		ldr	r3, [fp, #-24]
+ 3001 0414 032082E0 		add	r2, r2, r3
+ 3002 0418 8C309FE5 		ldr	r3, .L24
+ 3003 041c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3004 0420 000053E3 		cmp	r3, #0
+ 3005 0424 0200001A 		bne	.L21
+  87:../playerMovement.c **** 			freeNeighbors += 1;
+ 3006              		.loc 1 87 0
+ 3007 0428 10301BE5 		ldr	r3, [fp, #-16]
+ 3008 042c 013083E2 		add	r3, r3, #1
+ 3009 0430 10300BE5 		str	r3, [fp, #-16]
+ 3010              	.L21:
+  88:../playerMovement.c **** 		}
+  89:../playerMovement.c **** 	if (y+1 < 240/16)
+ 3011              		.loc 1 89 0
+ 3012 0434 1C301BE5 		ldr	r3, [fp, #-28]
+ 3013 0438 013083E2 		add	r3, r3, #1
+ 3014 043c 0E0053E3 		cmp	r3, #14
+ 3015 0440 0F0000CA 		bgt	.L22
+  90:../playerMovement.c **** 		if (map16x16[(y+1)*(320/16) + x] == NoNe){
+ 3016              		.loc 1 90 0
+ 3017 0444 1C301BE5 		ldr	r3, [fp, #-28]
+ 3018 0448 012083E2 		add	r2, r3, #1
+ 3019 044c 0230A0E1 		mov	r3, r2
+ 3020 0450 0331A0E1 		mov	r3, r3, asl #2
+ 3021 0454 023083E0 		add	r3, r3, r2
+ 3022 0458 0331A0E1 		mov	r3, r3, asl #2
+ 3023 045c 0320A0E1 		mov	r2, r3
+ 3024 0460 18301BE5 		ldr	r3, [fp, #-24]
+ 3025 0464 032082E0 		add	r2, r2, r3
+ 3026 0468 3C309FE5 		ldr	r3, .L24
+ 3027 046c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3028 0470 000053E3 		cmp	r3, #0
+ 3029 0474 0200001A 		bne	.L22
+  91:../playerMovement.c **** 			freeNeighbors += 1;
+ 3030              		.loc 1 91 0
+ 3031 0478 10301BE5 		ldr	r3, [fp, #-16]
+ 3032 047c 013083E2 		add	r3, r3, #1
+ 3033 0480 10300BE5 		str	r3, [fp, #-16]
+ 3034              	.L22:
+  92:../playerMovement.c **** 		}
+  93:../playerMovement.c **** 	if(freeNeighbors >= 2)
+ 3035              		.loc 1 93 0
+ 3036 0484 10301BE5 		ldr	r3, [fp, #-16]
+ 3037 0488 010053E3 		cmp	r3, #1
+ 3038 048c 010000DA 		ble	.L23
+  94:../playerMovement.c **** 		return 1;
+ 3039              		.loc 1 94 0
+ 3040 0490 0130A0E3 		mov	r3, #1
+ 3041 0494 000000EA 		b	.L18
+ 3042              	.L23:
+  95:../playerMovement.c **** 	return 0;
+ 3043              		.loc 1 95 0
+ 3044 0498 0030A0E3 		mov	r3, #0
+ 3045              	.L18:
+  96:../playerMovement.c **** }
+ 3046              		.loc 1 96 0
+ 3047 049c 0300A0E1 		mov	r0, r3
+ 3048 04a0 0CD04BE2 		sub	sp, fp, #12
+ 3049 04a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3050 04a8 1EFF2FE1 		bx	lr
+ 3051              	.L25:
+ 3052              		.align	2
+ 3053              	.L24:
+ 3054 04ac 00000000 		.word	map16x16
+ 3055              		.cfi_endproc
+ 3056              	.LFE1:
+ 3058              		.align	2
+ 3059              		.global	checkWinGame
+ 3061              	checkWinGame:
+ 3062              	.LFB2:
+  97:../playerMovement.c **** 
+  98:../playerMovement.c **** void checkWinGame(){
+ 3063              		.loc 1 98 0
+ 3064              		.cfi_startproc
+ 3065              		@ Function supports interworking.
+ 3066              		@ args = 0, pretend = 0, frame = 16
+ 3067              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3068 04b0 0DC0A0E1 		mov	ip, sp
+ 3069              	.LCFI4:
+ 3070              		.cfi_def_cfa_register 12
+ 3071 04b4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3072 04b8 04B04CE2 		sub	fp, ip, #4
+ 3073              		.cfi_offset 14, -8
+ 3074              		.cfi_offset 13, -12
+ 3075              		.cfi_offset 11, -16
+ 3076              	.LCFI5:
+ 3077              		.cfi_def_cfa 11, 4
+ 3078 04bc 10D04DE2 		sub	sp, sp, #16
+  99:../playerMovement.c **** 	int playerTopLeftX = playerPosX/16;
+ 3079              		.loc 1 99 0
+ 3080 04c0 D0309FE5 		ldr	r3, .L30
+ 3081 04c4 003093E5 		ldr	r3, [r3, #0]
+ 3082 04c8 0F2083E2 		add	r2, r3, #15
+ 3083 04cc 000053E3 		cmp	r3, #0
+ 3084 04d0 0230A0B1 		movlt	r3, r2
+ 3085 04d4 4332A0E1 		mov	r3, r3, asr #4
+ 3086 04d8 10300BE5 		str	r3, [fp, #-16]
+ 100:../playerMovement.c **** 	int playerTopLeftY = playerPosY/16;
+ 3087              		.loc 1 100 0
+ 3088 04dc B8309FE5 		ldr	r3, .L30+4
+ 3089 04e0 003093E5 		ldr	r3, [r3, #0]
+ 3090 04e4 0F2083E2 		add	r2, r3, #15
+ 3091 04e8 000053E3 		cmp	r3, #0
+ 3092 04ec 0230A0B1 		movlt	r3, r2
+ 3093 04f0 4332A0E1 		mov	r3, r3, asr #4
+ 3094 04f4 14300BE5 		str	r3, [fp, #-20]
+ 101:../playerMovement.c **** 	int playerBotRigthX = (playerPosX+15)/16;
+ 3095              		.loc 1 101 0
+ 3096 04f8 98309FE5 		ldr	r3, .L30
+ 3097 04fc 003093E5 		ldr	r3, [r3, #0]
+ 3098 0500 0F3083E2 		add	r3, r3, #15
+ 3099 0504 0F2083E2 		add	r2, r3, #15
+ 3100 0508 000053E3 		cmp	r3, #0
+ 3101 050c 0230A0B1 		movlt	r3, r2
+ 3102 0510 4332A0E1 		mov	r3, r3, asr #4
+ 3103 0514 18300BE5 		str	r3, [fp, #-24]
+ 102:../playerMovement.c **** 	int playerBotRigthY = (playerPosY+15)/16;
+ 3104              		.loc 1 102 0
+ 3105 0518 7C309FE5 		ldr	r3, .L30+4
+ 3106 051c 003093E5 		ldr	r3, [r3, #0]
+ 3107 0520 0F3083E2 		add	r3, r3, #15
+ 3108 0524 0F2083E2 		add	r2, r3, #15
+ 3109 0528 000053E3 		cmp	r3, #0
+ 3110 052c 0230A0B1 		movlt	r3, r2
+ 3111 0530 4332A0E1 		mov	r3, r3, asr #4
+ 3112 0534 1C300BE5 		str	r3, [fp, #-28]
+ 103:../playerMovement.c **** 
+ 104:../playerMovement.c **** 	if((exitPosX==playerTopLeftX && exitPosY==playerTopLeftY) || (exitPosX==playerBotRigthX && exitPos
+ 3113              		.loc 1 104 0
+ 3114 0538 60309FE5 		ldr	r3, .L30+8
+ 3115 053c 002093E5 		ldr	r2, [r3, #0]
+ 3116 0540 10301BE5 		ldr	r3, [fp, #-16]
+ 3117 0544 030052E1 		cmp	r2, r3
+ 3118 0548 0400001A 		bne	.L27
+ 3119              		.loc 1 104 0 is_stmt 0 discriminator 1
+ 3120 054c 50309FE5 		ldr	r3, .L30+12
+ 3121 0550 002093E5 		ldr	r2, [r3, #0]
+ 3122 0554 14301BE5 		ldr	r3, [fp, #-20]
+ 3123 0558 030052E1 		cmp	r2, r3
+ 3124 055c 0900000A 		beq	.L28
+ 3125              	.L27:
+ 3126              		.loc 1 104 0 discriminator 2
+ 3127 0560 38309FE5 		ldr	r3, .L30+8
+ 3128 0564 002093E5 		ldr	r2, [r3, #0]
+ 3129 0568 18301BE5 		ldr	r3, [fp, #-24]
+ 3130 056c 030052E1 		cmp	r2, r3
+ 3131 0570 0500001A 		bne	.L26
+ 3132              		.loc 1 104 0 discriminator 1
+ 3133 0574 28309FE5 		ldr	r3, .L30+12
+ 3134 0578 002093E5 		ldr	r2, [r3, #0]
+ 3135 057c 1C301BE5 		ldr	r3, [fp, #-28]
+ 3136 0580 030052E1 		cmp	r2, r3
+ 3137 0584 0000001A 		bne	.L26
+ 3138              	.L28:
+ 105:../playerMovement.c **** 		gameWin();
+ 3139              		.loc 1 105 0 is_stmt 1
+ 3140 0588 FEFFFFEB 		bl	gameWin
+ 3141              	.L26:
+ 106:../playerMovement.c **** 	}
+ 107:../playerMovement.c **** 
+ 108:../playerMovement.c **** }
+ 3142              		.loc 1 108 0
+ 3143 058c 0CD04BE2 		sub	sp, fp, #12
+ 3144 0590 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3145 0594 1EFF2FE1 		bx	lr
+ 3146              	.L31:
+ 3147              		.align	2
+ 3148              	.L30:
+ 3149 0598 00000000 		.word	playerPosX
+ 3150 059c 00000000 		.word	playerPosY
+ 3151 05a0 00000000 		.word	exitPosX
+ 3152 05a4 00000000 		.word	exitPosY
+ 3153              		.cfi_endproc
+ 3154              	.LFE2:
+ 3156              		.align	2
+ 3157              		.global	isValidPosition
+ 3159              	isValidPosition:
+ 3160              	.LFB3:
+ 109:../playerMovement.c **** 
+ 110:../playerMovement.c **** int isValidPosition(int x, int y){
+ 3161              		.loc 1 110 0
+ 3162              		.cfi_startproc
+ 3163              		@ Function supports interworking.
+ 3164              		@ args = 0, pretend = 0, frame = 16
+ 3165              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3166 05a8 0DC0A0E1 		mov	ip, sp
+ 3167              	.LCFI6:
+ 3168              		.cfi_def_cfa_register 12
+ 3169 05ac 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3170 05b0 04B04CE2 		sub	fp, ip, #4
+ 3171              		.cfi_offset 14, -8
+ 3172              		.cfi_offset 13, -12
+ 3173              		.cfi_offset 11, -16
+ 3174              	.LCFI7:
+ 3175              		.cfi_def_cfa 11, 4
+ 3176 05b4 10D04DE2 		sub	sp, sp, #16
+ 3177 05b8 18000BE5 		str	r0, [fp, #-24]
+ 3178 05bc 1C100BE5 		str	r1, [fp, #-28]
+ 111:../playerMovement.c **** 	int i, j;
+ 112:../playerMovement.c **** 	//Top, Left.
+ 113:../playerMovement.c **** 	i = x /16;	j = y /16;
+ 3179              		.loc 1 113 0
+ 3180 05c0 18301BE5 		ldr	r3, [fp, #-24]
+ 3181 05c4 0F2083E2 		add	r2, r3, #15
+ 3182 05c8 000053E3 		cmp	r3, #0
+ 3183 05cc 0230A0B1 		movlt	r3, r2
+ 3184 05d0 4332A0E1 		mov	r3, r3, asr #4
+ 3185 05d4 10300BE5 		str	r3, [fp, #-16]
+ 3186 05d8 1C301BE5 		ldr	r3, [fp, #-28]
+ 3187 05dc 0F2083E2 		add	r2, r3, #15
+ 3188 05e0 000053E3 		cmp	r3, #0
+ 3189 05e4 0230A0B1 		movlt	r3, r2
+ 3190 05e8 4332A0E1 		mov	r3, r3, asr #4
+ 3191 05ec 14300BE5 		str	r3, [fp, #-20]
+ 114:../playerMovement.c **** 	if(map16x16[j*(320/16) + i] != NoNe)
+ 3192              		.loc 1 114 0
+ 3193 05f0 14201BE5 		ldr	r2, [fp, #-20]
+ 3194 05f4 0230A0E1 		mov	r3, r2
+ 3195 05f8 0331A0E1 		mov	r3, r3, asl #2
+ 3196 05fc 023083E0 		add	r3, r3, r2
+ 3197 0600 0331A0E1 		mov	r3, r3, asl #2
+ 3198 0604 0320A0E1 		mov	r2, r3
+ 3199 0608 10301BE5 		ldr	r3, [fp, #-16]
+ 3200 060c 032082E0 		add	r2, r2, r3
+ 3201 0610 6C319FE5 		ldr	r3, .L38
+ 3202 0614 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3203 0618 000053E3 		cmp	r3, #0
+ 3204 061c 0100000A 		beq	.L33
+ 115:../playerMovement.c **** 		return 0;
+ 3205              		.loc 1 115 0
+ 3206 0620 0030A0E3 		mov	r3, #0
+ 3207 0624 520000EA 		b	.L34
+ 3208              	.L33:
+ 116:../playerMovement.c **** 
+ 117:../playerMovement.c **** 	//Top, Right.
+ 118:../playerMovement.c **** 	i = (x+15) /16;	j = y /16;
+ 3209              		.loc 1 118 0
+ 3210 0628 18301BE5 		ldr	r3, [fp, #-24]
+ 3211 062c 0F3083E2 		add	r3, r3, #15
+ 3212 0630 0F2083E2 		add	r2, r3, #15
+ 3213 0634 000053E3 		cmp	r3, #0
+ 3214 0638 0230A0B1 		movlt	r3, r2
+ 3215 063c 4332A0E1 		mov	r3, r3, asr #4
+ 3216 0640 10300BE5 		str	r3, [fp, #-16]
+ 3217 0644 1C301BE5 		ldr	r3, [fp, #-28]
+ 3218 0648 0F2083E2 		add	r2, r3, #15
+ 3219 064c 000053E3 		cmp	r3, #0
+ 3220 0650 0230A0B1 		movlt	r3, r2
+ 3221 0654 4332A0E1 		mov	r3, r3, asr #4
+ 3222 0658 14300BE5 		str	r3, [fp, #-20]
+ 119:../playerMovement.c **** 	if(map16x16[j*(320/16) + i] != NoNe)
+ 3223              		.loc 1 119 0
+ 3224 065c 14201BE5 		ldr	r2, [fp, #-20]
+ 3225 0660 0230A0E1 		mov	r3, r2
+ 3226 0664 0331A0E1 		mov	r3, r3, asl #2
+ 3227 0668 023083E0 		add	r3, r3, r2
+ 3228 066c 0331A0E1 		mov	r3, r3, asl #2
+ 3229 0670 0320A0E1 		mov	r2, r3
+ 3230 0674 10301BE5 		ldr	r3, [fp, #-16]
+ 3231 0678 032082E0 		add	r2, r2, r3
+ 3232 067c 00319FE5 		ldr	r3, .L38
+ 3233 0680 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3234 0684 000053E3 		cmp	r3, #0
+ 3235 0688 0100000A 		beq	.L35
+ 120:../playerMovement.c **** 		return 0;
+ 3236              		.loc 1 120 0
+ 3237 068c 0030A0E3 		mov	r3, #0
+ 3238 0690 370000EA 		b	.L34
+ 3239              	.L35:
+ 121:../playerMovement.c **** 
+ 122:../playerMovement.c **** 	//Bottom, Left.
+ 123:../playerMovement.c **** 	i = x /16;	j = (y+15) /16;
+ 3240              		.loc 1 123 0
+ 3241 0694 18301BE5 		ldr	r3, [fp, #-24]
+ 3242 0698 0F2083E2 		add	r2, r3, #15
+ 3243 069c 000053E3 		cmp	r3, #0
+ 3244 06a0 0230A0B1 		movlt	r3, r2
+ 3245 06a4 4332A0E1 		mov	r3, r3, asr #4
+ 3246 06a8 10300BE5 		str	r3, [fp, #-16]
+ 3247 06ac 1C301BE5 		ldr	r3, [fp, #-28]
+ 3248 06b0 0F3083E2 		add	r3, r3, #15
+ 3249 06b4 0F2083E2 		add	r2, r3, #15
+ 3250 06b8 000053E3 		cmp	r3, #0
+ 3251 06bc 0230A0B1 		movlt	r3, r2
+ 3252 06c0 4332A0E1 		mov	r3, r3, asr #4
+ 3253 06c4 14300BE5 		str	r3, [fp, #-20]
+ 124:../playerMovement.c **** 	if(map16x16[j*(320/16) + i] != NoNe)
+ 3254              		.loc 1 124 0
+ 3255 06c8 14201BE5 		ldr	r2, [fp, #-20]
+ 3256 06cc 0230A0E1 		mov	r3, r2
+ 3257 06d0 0331A0E1 		mov	r3, r3, asl #2
+ 3258 06d4 023083E0 		add	r3, r3, r2
+ 3259 06d8 0331A0E1 		mov	r3, r3, asl #2
+ 3260 06dc 0320A0E1 		mov	r2, r3
+ 3261 06e0 10301BE5 		ldr	r3, [fp, #-16]
+ 3262 06e4 032082E0 		add	r2, r2, r3
+ 3263 06e8 94309FE5 		ldr	r3, .L38
+ 3264 06ec 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3265 06f0 000053E3 		cmp	r3, #0
+ 3266 06f4 0100000A 		beq	.L36
+ 125:../playerMovement.c **** 		return 0;
+ 3267              		.loc 1 125 0
+ 3268 06f8 0030A0E3 		mov	r3, #0
+ 3269 06fc 1C0000EA 		b	.L34
+ 3270              	.L36:
+ 126:../playerMovement.c **** 
+ 127:../playerMovement.c **** 	//Bottom, Right.
+ 128:../playerMovement.c **** 	i = (x+15) /16;	j = (y+15) /16;
+ 3271              		.loc 1 128 0
+ 3272 0700 18301BE5 		ldr	r3, [fp, #-24]
+ 3273 0704 0F3083E2 		add	r3, r3, #15
+ 3274 0708 0F2083E2 		add	r2, r3, #15
+ 3275 070c 000053E3 		cmp	r3, #0
+ 3276 0710 0230A0B1 		movlt	r3, r2
+ 3277 0714 4332A0E1 		mov	r3, r3, asr #4
+ 3278 0718 10300BE5 		str	r3, [fp, #-16]
+ 3279 071c 1C301BE5 		ldr	r3, [fp, #-28]
+ 3280 0720 0F3083E2 		add	r3, r3, #15
+ 3281 0724 0F2083E2 		add	r2, r3, #15
+ 3282 0728 000053E3 		cmp	r3, #0
+ 3283 072c 0230A0B1 		movlt	r3, r2
+ 3284 0730 4332A0E1 		mov	r3, r3, asr #4
+ 3285 0734 14300BE5 		str	r3, [fp, #-20]
+ 129:../playerMovement.c **** 	if(map16x16[j*(320/16) + i] != NoNe)
+ 3286              		.loc 1 129 0
+ 3287 0738 14201BE5 		ldr	r2, [fp, #-20]
+ 3288 073c 0230A0E1 		mov	r3, r2
+ 3289 0740 0331A0E1 		mov	r3, r3, asl #2
+ 3290 0744 023083E0 		add	r3, r3, r2
+ 3291 0748 0331A0E1 		mov	r3, r3, asl #2
+ 3292 074c 0320A0E1 		mov	r2, r3
+ 3293 0750 10301BE5 		ldr	r3, [fp, #-16]
+ 3294 0754 032082E0 		add	r2, r2, r3
+ 3295 0758 24309FE5 		ldr	r3, .L38
+ 3296 075c 023193E7 		ldr	r3, [r3, r2, asl #2]
+ 3297 0760 000053E3 		cmp	r3, #0
+ 3298 0764 0100000A 		beq	.L37
+ 130:../playerMovement.c **** 		return 0;
+ 3299              		.loc 1 130 0
+ 3300 0768 0030A0E3 		mov	r3, #0
+ 3301 076c 000000EA 		b	.L34
+ 3302              	.L37:
+ 131:../playerMovement.c **** 
+ 132:../playerMovement.c **** 	// Return OK.
+ 133:../playerMovement.c **** 	return 1;
+ 3303              		.loc 1 133 0
+ 3304 0770 0130A0E3 		mov	r3, #1
+ 3305              	.L34:
+ 134:../playerMovement.c **** 
+ 135:../playerMovement.c **** }
+ 3306              		.loc 1 135 0
+ 3307 0774 0300A0E1 		mov	r0, r3
+ 3308 0778 0CD04BE2 		sub	sp, fp, #12
+ 3309 077c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3310 0780 1EFF2FE1 		bx	lr
+ 3311              	.L39:
+ 3312              		.align	2
+ 3313              	.L38:
+ 3314 0784 00000000 		.word	map16x16
+ 3315              		.cfi_endproc
+ 3316              	.LFE3:
+ 3318              		.align	2
+ 3319              		.global	movePlayerUp
+ 3321              	movePlayerUp:
+ 3322              	.LFB4:
+ 136:../playerMovement.c **** 
+ 137:../playerMovement.c **** /* Dado a los obstaculos que rodean al mapa no es necesario preocuparnos de salir del mapa.*/
+ 138:../playerMovement.c **** void movePlayerUp(void){
+ 3323              		.loc 1 138 0
+ 3324              		.cfi_startproc
+ 3325              		@ Function supports interworking.
+ 3326              		@ args = 0, pretend = 0, frame = 0
+ 3327              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3328 0788 0DC0A0E1 		mov	ip, sp
+ 3329              	.LCFI8:
+ 3330              		.cfi_def_cfa_register 12
+ 3331 078c 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3332 0790 04B04CE2 		sub	fp, ip, #4
+ 3333              		.cfi_offset 14, -8
+ 3334              		.cfi_offset 13, -12
+ 3335              		.cfi_offset 11, -16
+ 3336              	.LCFI9:
+ 3337              		.cfi_def_cfa 11, 4
+ 139:../playerMovement.c **** 	if(isValidPosition(playerPosX, playerPosY -1)){
+ 3338              		.loc 1 139 0
+ 3339 0794 6C309FE5 		ldr	r3, .L42
+ 3340 0798 002093E5 		ldr	r2, [r3, #0]
+ 3341 079c 68309FE5 		ldr	r3, .L42+4
+ 3342 07a0 003093E5 		ldr	r3, [r3, #0]
+ 3343 07a4 013043E2 		sub	r3, r3, #1
+ 3344 07a8 0200A0E1 		mov	r0, r2
+ 3345 07ac 0310A0E1 		mov	r1, r3
+ 3346 07b0 FEFFFFEB 		bl	isValidPosition
+ 3347 07b4 0030A0E1 		mov	r3, r0
+ 3348 07b8 000053E3 		cmp	r3, #0
+ 3349 07bc 0E00000A 		beq	.L40
+ 140:../playerMovement.c **** 		playerPosY -= 1;
+ 3350              		.loc 1 140 0
+ 3351 07c0 44309FE5 		ldr	r3, .L42+4
+ 3352 07c4 003093E5 		ldr	r3, [r3, #0]
+ 3353 07c8 012043E2 		sub	r2, r3, #1
+ 3354 07cc 38309FE5 		ldr	r3, .L42+4
+ 3355 07d0 002083E5 		str	r2, [r3, #0]
+ 141:../playerMovement.c **** 		enviarPosPlayer(playerPosX, playerPosY, contSp);
+ 3356              		.loc 1 141 0
+ 3357 07d4 2C309FE5 		ldr	r3, .L42
+ 3358 07d8 001093E5 		ldr	r1, [r3, #0]
+ 3359 07dc 28309FE5 		ldr	r3, .L42+4
+ 3360 07e0 002093E5 		ldr	r2, [r3, #0]
+ 3361 07e4 24309FE5 		ldr	r3, .L42+8
+ 3362 07e8 003093E5 		ldr	r3, [r3, #0]
+ 3363 07ec 0100A0E1 		mov	r0, r1
+ 3364 07f0 0210A0E1 		mov	r1, r2
+ 3365 07f4 0320A0E1 		mov	r2, r3
+ 3366 07f8 FEFFFFEB 		bl	enviarPosPlayer
+ 3367              	.L40:
+ 142:../playerMovement.c **** 	}
+ 143:../playerMovement.c **** }
+ 3368              		.loc 1 143 0
+ 3369 07fc 0CD04BE2 		sub	sp, fp, #12
+ 3370 0800 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3371 0804 1EFF2FE1 		bx	lr
+ 3372              	.L43:
+ 3373              		.align	2
+ 3374              	.L42:
+ 3375 0808 00000000 		.word	playerPosX
+ 3376 080c 00000000 		.word	playerPosY
+ 3377 0810 00000000 		.word	contSp
+ 3378              		.cfi_endproc
+ 3379              	.LFE4:
+ 3381              		.align	2
+ 3382              		.global	movePlayerDown
+ 3384              	movePlayerDown:
+ 3385              	.LFB5:
+ 144:../playerMovement.c **** 
+ 145:../playerMovement.c **** void movePlayerDown(void){
+ 3386              		.loc 1 145 0
+ 3387              		.cfi_startproc
+ 3388              		@ Function supports interworking.
+ 3389              		@ args = 0, pretend = 0, frame = 0
+ 3390              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3391 0814 0DC0A0E1 		mov	ip, sp
+ 3392              	.LCFI10:
+ 3393              		.cfi_def_cfa_register 12
+ 3394 0818 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3395 081c 04B04CE2 		sub	fp, ip, #4
+ 3396              		.cfi_offset 14, -8
+ 3397              		.cfi_offset 13, -12
+ 3398              		.cfi_offset 11, -16
+ 3399              	.LCFI11:
+ 3400              		.cfi_def_cfa 11, 4
+ 146:../playerMovement.c **** 	if(isValidPosition(playerPosX, playerPosY +1)){
+ 3401              		.loc 1 146 0
+ 3402 0820 6C309FE5 		ldr	r3, .L46
+ 3403 0824 002093E5 		ldr	r2, [r3, #0]
+ 3404 0828 68309FE5 		ldr	r3, .L46+4
+ 3405 082c 003093E5 		ldr	r3, [r3, #0]
+ 3406 0830 013083E2 		add	r3, r3, #1
+ 3407 0834 0200A0E1 		mov	r0, r2
+ 3408 0838 0310A0E1 		mov	r1, r3
+ 3409 083c FEFFFFEB 		bl	isValidPosition
+ 3410 0840 0030A0E1 		mov	r3, r0
+ 3411 0844 000053E3 		cmp	r3, #0
+ 3412 0848 0E00000A 		beq	.L44
+ 147:../playerMovement.c **** 		playerPosY += 1;
+ 3413              		.loc 1 147 0
+ 3414 084c 44309FE5 		ldr	r3, .L46+4
+ 3415 0850 003093E5 		ldr	r3, [r3, #0]
+ 3416 0854 012083E2 		add	r2, r3, #1
+ 3417 0858 38309FE5 		ldr	r3, .L46+4
+ 3418 085c 002083E5 		str	r2, [r3, #0]
+ 148:../playerMovement.c **** 		enviarPosPlayer(playerPosX, playerPosY, contSp);
+ 3419              		.loc 1 148 0
+ 3420 0860 2C309FE5 		ldr	r3, .L46
+ 3421 0864 001093E5 		ldr	r1, [r3, #0]
+ 3422 0868 28309FE5 		ldr	r3, .L46+4
+ 3423 086c 002093E5 		ldr	r2, [r3, #0]
+ 3424 0870 24309FE5 		ldr	r3, .L46+8
+ 3425 0874 003093E5 		ldr	r3, [r3, #0]
+ 3426 0878 0100A0E1 		mov	r0, r1
+ 3427 087c 0210A0E1 		mov	r1, r2
+ 3428 0880 0320A0E1 		mov	r2, r3
+ 3429 0884 FEFFFFEB 		bl	enviarPosPlayer
+ 3430              	.L44:
+ 149:../playerMovement.c **** 	}
+ 150:../playerMovement.c **** }
+ 3431              		.loc 1 150 0
+ 3432 0888 0CD04BE2 		sub	sp, fp, #12
+ 3433 088c 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3434 0890 1EFF2FE1 		bx	lr
+ 3435              	.L47:
+ 3436              		.align	2
+ 3437              	.L46:
+ 3438 0894 00000000 		.word	playerPosX
+ 3439 0898 00000000 		.word	playerPosY
+ 3440 089c 00000000 		.word	contSp
+ 3441              		.cfi_endproc
+ 3442              	.LFE5:
+ 3444              		.align	2
+ 3445              		.global	movePlayerLeft
+ 3447              	movePlayerLeft:
+ 3448              	.LFB6:
+ 151:../playerMovement.c **** 
+ 152:../playerMovement.c **** void movePlayerLeft(void){
+ 3449              		.loc 1 152 0
+ 3450              		.cfi_startproc
+ 3451              		@ Function supports interworking.
+ 3452              		@ args = 0, pretend = 0, frame = 0
+ 3453              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3454 08a0 0DC0A0E1 		mov	ip, sp
+ 3455              	.LCFI12:
+ 3456              		.cfi_def_cfa_register 12
+ 3457 08a4 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3458 08a8 04B04CE2 		sub	fp, ip, #4
+ 3459              		.cfi_offset 14, -8
+ 3460              		.cfi_offset 13, -12
+ 3461              		.cfi_offset 11, -16
+ 3462              	.LCFI13:
+ 3463              		.cfi_def_cfa 11, 4
+ 153:../playerMovement.c **** 	if(isValidPosition(playerPosX -1, playerPosY)){
+ 3464              		.loc 1 153 0
+ 3465 08ac 6C309FE5 		ldr	r3, .L50
+ 3466 08b0 003093E5 		ldr	r3, [r3, #0]
+ 3467 08b4 012043E2 		sub	r2, r3, #1
+ 3468 08b8 64309FE5 		ldr	r3, .L50+4
+ 3469 08bc 003093E5 		ldr	r3, [r3, #0]
+ 3470 08c0 0200A0E1 		mov	r0, r2
+ 3471 08c4 0310A0E1 		mov	r1, r3
+ 3472 08c8 FEFFFFEB 		bl	isValidPosition
+ 3473 08cc 0030A0E1 		mov	r3, r0
+ 3474 08d0 000053E3 		cmp	r3, #0
+ 3475 08d4 0E00000A 		beq	.L48
+ 154:../playerMovement.c **** 		playerPosX -= 1;
+ 3476              		.loc 1 154 0
+ 3477 08d8 40309FE5 		ldr	r3, .L50
+ 3478 08dc 003093E5 		ldr	r3, [r3, #0]
+ 3479 08e0 012043E2 		sub	r2, r3, #1
+ 3480 08e4 34309FE5 		ldr	r3, .L50
+ 3481 08e8 002083E5 		str	r2, [r3, #0]
+ 155:../playerMovement.c **** 		enviarPosPlayer(playerPosX, playerPosY, contSp);
+ 3482              		.loc 1 155 0
+ 3483 08ec 2C309FE5 		ldr	r3, .L50
+ 3484 08f0 001093E5 		ldr	r1, [r3, #0]
+ 3485 08f4 28309FE5 		ldr	r3, .L50+4
+ 3486 08f8 002093E5 		ldr	r2, [r3, #0]
+ 3487 08fc 24309FE5 		ldr	r3, .L50+8
+ 3488 0900 003093E5 		ldr	r3, [r3, #0]
+ 3489 0904 0100A0E1 		mov	r0, r1
+ 3490 0908 0210A0E1 		mov	r1, r2
+ 3491 090c 0320A0E1 		mov	r2, r3
+ 3492 0910 FEFFFFEB 		bl	enviarPosPlayer
+ 3493              	.L48:
+ 156:../playerMovement.c **** 	}
+ 157:../playerMovement.c **** }
+ 3494              		.loc 1 157 0
+ 3495 0914 0CD04BE2 		sub	sp, fp, #12
+ 3496 0918 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3497 091c 1EFF2FE1 		bx	lr
+ 3498              	.L51:
+ 3499              		.align	2
+ 3500              	.L50:
+ 3501 0920 00000000 		.word	playerPosX
+ 3502 0924 00000000 		.word	playerPosY
+ 3503 0928 00000000 		.word	contSp
+ 3504              		.cfi_endproc
+ 3505              	.LFE6:
+ 3507              		.align	2
+ 3508              		.global	movePlayerRight
+ 3510              	movePlayerRight:
+ 3511              	.LFB7:
+ 158:../playerMovement.c **** 
+ 159:../playerMovement.c **** void movePlayerRight(void){
+ 3512              		.loc 1 159 0
+ 3513              		.cfi_startproc
+ 3514              		@ Function supports interworking.
+ 3515              		@ args = 0, pretend = 0, frame = 0
+ 3516              		@ frame_needed = 1, uses_anonymous_args = 0
+ 3517 092c 0DC0A0E1 		mov	ip, sp
+ 3518              	.LCFI14:
+ 3519              		.cfi_def_cfa_register 12
+ 3520 0930 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 3521 0934 04B04CE2 		sub	fp, ip, #4
+ 3522              		.cfi_offset 14, -8
+ 3523              		.cfi_offset 13, -12
+ 3524              		.cfi_offset 11, -16
+ 3525              	.LCFI15:
+ 3526              		.cfi_def_cfa 11, 4
+ 160:../playerMovement.c **** 	if(isValidPosition(playerPosX +1, playerPosY)){
+ 3527              		.loc 1 160 0
+ 3528 0938 6C309FE5 		ldr	r3, .L54
+ 3529 093c 003093E5 		ldr	r3, [r3, #0]
+ 3530 0940 012083E2 		add	r2, r3, #1
+ 3531 0944 64309FE5 		ldr	r3, .L54+4
+ 3532 0948 003093E5 		ldr	r3, [r3, #0]
+ 3533 094c 0200A0E1 		mov	r0, r2
+ 3534 0950 0310A0E1 		mov	r1, r3
+ 3535 0954 FEFFFFEB 		bl	isValidPosition
+ 3536 0958 0030A0E1 		mov	r3, r0
+ 3537 095c 000053E3 		cmp	r3, #0
+ 3538 0960 0E00000A 		beq	.L52
+ 161:../playerMovement.c **** 		playerPosX += 1;
+ 3539              		.loc 1 161 0
+ 3540 0964 40309FE5 		ldr	r3, .L54
+ 3541 0968 003093E5 		ldr	r3, [r3, #0]
+ 3542 096c 012083E2 		add	r2, r3, #1
+ 3543 0970 34309FE5 		ldr	r3, .L54
+ 3544 0974 002083E5 		str	r2, [r3, #0]
+ 162:../playerMovement.c **** 		enviarPosPlayer(playerPosX, playerPosY, contSp);
+ 3545              		.loc 1 162 0
+ 3546 0978 2C309FE5 		ldr	r3, .L54
+ 3547 097c 001093E5 		ldr	r1, [r3, #0]
+ 3548 0980 28309FE5 		ldr	r3, .L54+4
+ 3549 0984 002093E5 		ldr	r2, [r3, #0]
+ 3550 0988 24309FE5 		ldr	r3, .L54+8
+ 3551 098c 003093E5 		ldr	r3, [r3, #0]
+ 3552 0990 0100A0E1 		mov	r0, r1
+ 3553 0994 0210A0E1 		mov	r1, r2
+ 3554 0998 0320A0E1 		mov	r2, r3
+ 3555 099c FEFFFFEB 		bl	enviarPosPlayer
+ 3556              	.L52:
+ 163:../playerMovement.c **** 	}
+ 164:../playerMovement.c **** }
+ 3557              		.loc 1 164 0
+ 3558 09a0 0CD04BE2 		sub	sp, fp, #12
+ 3559 09a4 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 3560 09a8 1EFF2FE1 		bx	lr
+ 3561              	.L55:
+ 3562              		.align	2
+ 3563              	.L54:
+ 3564 09ac 00000000 		.word	playerPosX
+ 3565 09b0 00000000 		.word	playerPosY
+ 3566 09b4 00000000 		.word	contSp
+ 3567              		.cfi_endproc
+ 3568              	.LFE7:
+ 3570              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 playerMovement.c
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2620   .data:00000000 oldPlayerPosX
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2617   .data:00000000 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2626   .data:00000004 oldPlayerPosY
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2632   .data:00000008 playerPosX
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2638   .data:0000000c playerPosY
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2641   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2644   .text:00000000 initPlayerPosition16x16
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2899   .text:000002ec isValidPos
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2881   .text:000002bc $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:2896   .text:000002ec $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3054   .text:000004ac $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3058   .text:000004b0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3061   .text:000004b0 checkWinGame
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3149   .text:00000598 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3156   .text:000005a8 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3159   .text:000005a8 isValidPosition
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3314   .text:00000784 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3318   .text:00000788 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3321   .text:00000788 movePlayerUp
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3375   .text:00000808 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3381   .text:00000814 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3384   .text:00000814 movePlayerDown
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3438   .text:00000894 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3444   .text:000008a0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3447   .text:000008a0 movePlayerLeft
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3501   .text:00000920 $d
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3507   .text:0000092c $a
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3510   .text:0000092c movePlayerRight
+C:\Users\USUARI~1\AppData\Local\Temp\ccY4Le17.s:3564   .text:000009ac $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+rand
+fplayerPosX
+fplayerPosY
+foldPlayerPosY
+foldPlayerPosX
+player1
+player2
+map16x16
+gameWin
+exitPosX
+exitPosY
+enviarPosPlayer
+contSp

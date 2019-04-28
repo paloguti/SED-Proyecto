@@ -1,0 +1,397 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"timer.c"
+  21              	.Ltext0:
+  22              		.file 1 "../timer.c"
+ 2665              		.align	2
+ 2666              		.global	timer_init
+ 2668              	timer_init:
+ 2669              	.LFB0:
+   1:../timer.c    **** /*--- ficheros de cabecera ---*/
+   2:../timer.c    **** #include "44b.h"
+   3:../timer.c    **** #include "44blib.h"
+   4:../timer.c    **** #include "playerMovement.h"
+   5:../timer.c    **** #include "bombLogic.h"
+   6:../timer.c    **** 
+   7:../timer.c    **** extern void D8Led_symbol(int value);
+   8:../timer.c    **** extern void ledsToggle();
+   9:../timer.c    **** extern int key_read();
+  10:../timer.c    **** 
+  11:../timer.c    **** void timer_ISR(void) __attribute__ ((interrupt ("IRQ")));
+  12:../timer.c    **** void timer_init();
+  13:../timer.c    **** 
+  14:../timer.c    **** void timer_init(){
+ 2670              		.loc 1 14 0
+ 2671              		.cfi_startproc
+ 2672              		@ Function supports interworking.
+ 2673              		@ args = 0, pretend = 0, frame = 0
+ 2674              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2675 0000 0DC0A0E1 		mov	ip, sp
+ 2676              	.LCFI0:
+ 2677              		.cfi_def_cfa_register 12
+ 2678 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2679 0008 04B04CE2 		sub	fp, ip, #4
+ 2680              		.cfi_offset 14, -8
+ 2681              		.cfi_offset 13, -12
+ 2682              		.cfi_offset 11, -16
+ 2683              	.LCFI1:
+ 2684              		.cfi_def_cfa 11, 4
+  15:../timer.c    **** 	// Configuracion del controlador de interrupciones */
+  16:../timer.c    **** 	// Configura las lineas como de tipo IRQ mediante INTMOD
+  17:../timer.c    **** 	rINTMOD = 0x0;
+ 2685              		.loc 1 17 0
+ 2686 000c 58319FE5 		ldr	r3, .L2
+ 2687 0010 0020A0E3 		mov	r2, #0
+ 2688 0014 002083E5 		str	r2, [r3, #0]
+  18:../timer.c    **** 	// Habilitar int. vectorizadas y la linea IRQ (FIQ no)
+  19:../timer.c    **** 	rINTCON &= ~(0x1<<1 | 0x1<<2);
+ 2689              		.loc 1 19 0
+ 2690 0018 1E36A0E3 		mov	r3, #31457280
+ 2691 001c 1E26A0E3 		mov	r2, #31457280
+ 2692 0020 002092E5 		ldr	r2, [r2, #0]
+ 2693 0024 0620C2E3 		bic	r2, r2, #6
+ 2694 0028 002083E5 		str	r2, [r3, #0]
+  20:../timer.c    **** 	rINTCON |= 0x1<<0;
+ 2695              		.loc 1 20 0
+ 2696 002c 1E36A0E3 		mov	r3, #31457280
+ 2697 0030 1E26A0E3 		mov	r2, #31457280
+ 2698 0034 002092E5 		ldr	r2, [r2, #0]
+ 2699 0038 012082E3 		orr	r2, r2, #1
+ 2700 003c 002083E5 		str	r2, [r3, #0]
+  21:../timer.c    **** 	//Habilitar linea de timer [0..2] y bit global
+  22:../timer.c    **** 	rINTMSK &= ~(1<<13 | 1<<12 | 1<<11 | 1<<26);
+ 2701              		.loc 1 22 0
+ 2702 0040 28219FE5 		ldr	r2, .L2+4
+ 2703 0044 24319FE5 		ldr	r3, .L2+4
+ 2704 0048 003093E5 		ldr	r3, [r3, #0]
+ 2705 004c 0133C3E3 		bic	r3, r3, #67108864
+ 2706 0050 0E3BC3E3 		bic	r3, r3, #14336
+ 2707 0054 003082E5 		str	r3, [r2, #0]
+  23:../timer.c    **** 	//rINTMSK = rINTMSK & ~(BIT_TIMER0 | BIT_GLOBAL);// Enmascarar todas las lineas excepto Timer0 y e
+  24:../timer.c    **** 	// Establece la rutina de servicio para TIMER [0..2] */
+  25:../timer.c    **** 	pISR_TIMER0 = (unsigned)timer_ISR;
+ 2708              		.loc 1 25 0
+ 2709 0058 14319FE5 		ldr	r3, .L2+8
+ 2710 005c 14219FE5 		ldr	r2, .L2+12
+ 2711 0060 002083E5 		str	r2, [r3, #0]
+  26:../timer.c    **** 	pISR_TIMER1 = (unsigned)timer_ISR;
+ 2712              		.loc 1 26 0
+ 2713 0064 10319FE5 		ldr	r3, .L2+16
+ 2714 0068 08219FE5 		ldr	r2, .L2+12
+ 2715 006c 002083E5 		str	r2, [r3, #0]
+  27:../timer.c    **** 	pISR_TIMER2 = (unsigned)timer_ISR;
+ 2716              		.loc 1 27 0
+ 2717 0070 08319FE5 		ldr	r3, .L2+20
+ 2718 0074 FC209FE5 		ldr	r2, .L2+12
+ 2719 0078 002083E5 		str	r2, [r3, #0]
+  28:../timer.c    **** 
+  29:../timer.c    **** 	//Configurar Timer [0..2]
+  30:../timer.c    **** 	//Configurar prescales's 0 y 1
+  31:../timer.c    **** 	rTCFG0 = 0xFF40;
+ 2720              		.loc 1 31 0
+ 2721 007c 00319FE5 		ldr	r3, .L2+24
+ 2722 0080 00219FE5 		ldr	r2, .L2+28
+ 2723 0084 002083E5 		str	r2, [r3, #0]
+  32:../timer.c    **** 	//Limiar divisores [0..2]
+  33:../timer.c    **** 	rTCFG1 &= ~((unsigned int)0x0)<<12;
+ 2724              		.loc 1 33 0
+ 2725 0088 FC209FE5 		ldr	r2, .L2+32
+ 2726 008c F8309FE5 		ldr	r3, .L2+32
+ 2727 0090 003093E5 		ldr	r3, [r3, #0]
+ 2728 0094 FF3EC3E3 		bic	r3, r3, #4080
+ 2729 0098 0F30C3E3 		bic	r3, r3, #15
+ 2730 009c 003082E5 		str	r3, [r2, #0]
+  34:../timer.c    **** 	//Fijar divisor 0
+  35:../timer.c    **** 		// Ya fijado
+  36:../timer.c    **** 	//Fijar divisor 1
+  37:../timer.c    **** 	rTCFG1 |= 0x2<<4;
+ 2731              		.loc 1 37 0
+ 2732 00a0 E4309FE5 		ldr	r3, .L2+32
+ 2733 00a4 E0209FE5 		ldr	r2, .L2+32
+ 2734 00a8 002092E5 		ldr	r2, [r2, #0]
+ 2735 00ac 202082E3 		orr	r2, r2, #32
+ 2736 00b0 002083E5 		str	r2, [r3, #0]
+  38:../timer.c    **** 	//Fijar divisor 2
+  39:../timer.c    **** 	rTCFG1 |= 0x4<<8;
+ 2737              		.loc 1 39 0
+ 2738 00b4 D0309FE5 		ldr	r3, .L2+32
+ 2739 00b8 CC209FE5 		ldr	r2, .L2+32
+ 2740 00bc 002092E5 		ldr	r2, [r2, #0]
+ 2741 00c0 012B82E3 		orr	r2, r2, #1024
+ 2742 00c4 002083E5 		str	r2, [r3, #0]
+  40:../timer.c    **** 
+  41:../timer.c    **** 	rTCNTB0=65535;
+ 2743              		.loc 1 41 0
+ 2744 00c8 C0309FE5 		ldr	r3, .L2+36
+ 2745 00cc C0209FE5 		ldr	r2, .L2+40
+ 2746 00d0 002083E5 		str	r2, [r3, #0]
+  42:../timer.c    **** 	rTCNTB1=65535;
+ 2747              		.loc 1 42 0
+ 2748 00d4 BC309FE5 		ldr	r3, .L2+44
+ 2749 00d8 B4209FE5 		ldr	r2, .L2+40
+ 2750 00dc 002083E5 		str	r2, [r3, #0]
+  43:../timer.c    **** 	rTCNTB2=65535;
+ 2751              		.loc 1 43 0
+ 2752 00e0 B4309FE5 		ldr	r3, .L2+48
+ 2753 00e4 A8209FE5 		ldr	r2, .L2+40
+ 2754 00e8 002083E5 		str	r2, [r3, #0]
+  44:../timer.c    **** 	rTCMPB0=12800;
+ 2755              		.loc 1 44 0
+ 2756 00ec AC309FE5 		ldr	r3, .L2+52
+ 2757 00f0 322CA0E3 		mov	r2, #12800
+ 2758 00f4 002083E5 		str	r2, [r3, #0]
+  45:../timer.c    **** 	rTCMPB1=12800;
+ 2759              		.loc 1 45 0
+ 2760 00f8 A4309FE5 		ldr	r3, .L2+56
+ 2761 00fc 322CA0E3 		mov	r2, #12800
+ 2762 0100 002083E5 		str	r2, [r3, #0]
+  46:../timer.c    **** 	rTCMPB2=12800;
+ 2763              		.loc 1 46 0
+ 2764 0104 9C309FE5 		ldr	r3, .L2+60
+ 2765 0108 322CA0E3 		mov	r2, #12800
+ 2766 010c 002083E5 		str	r2, [r3, #0]
+  47:../timer.c    **** 	
+  48:../timer.c    **** 	/*
+  49:../timer.c    **** 	//Establecer manual updates
+  50:../timer.c    **** 	rTCON |= (0x1<<1 | 0x1<<9 | 0x1<<13);
+  51:../timer.c    **** 	//Desactivar manual updates
+  52:../timer.c    **** 	rTCON &= ~(0x1<<1 | 0x1<<9 | 0x1<<13);
+  53:../timer.c    **** 	//Activar auto-reload
+  54:../timer.c    **** 	rTCON |= (0x1<<3 | 0x1<<11 | 0x1<<15);
+  55:../timer.c    **** 	//Iniciar timer
+  56:../timer.c    **** 	rTCON |= (0x1<<0 | 0x1<<8 | 0x1<<12);
+  57:../timer.c    **** 	*/
+  58:../timer.c    **** 
+  59:../timer.c    **** 	rTCON |= (0x1<<1);
+ 2767              		.loc 1 59 0
+ 2768 0110 94309FE5 		ldr	r3, .L2+64
+ 2769 0114 90209FE5 		ldr	r2, .L2+64
+ 2770 0118 002092E5 		ldr	r2, [r2, #0]
+ 2771 011c 022082E3 		orr	r2, r2, #2
+ 2772 0120 002083E5 		str	r2, [r3, #0]
+  60:../timer.c    **** 	rTCON &= ~(0x1<<1);
+ 2773              		.loc 1 60 0
+ 2774 0124 80309FE5 		ldr	r3, .L2+64
+ 2775 0128 7C209FE5 		ldr	r2, .L2+64
+ 2776 012c 002092E5 		ldr	r2, [r2, #0]
+ 2777 0130 0220C2E3 		bic	r2, r2, #2
+ 2778 0134 002083E5 		str	r2, [r3, #0]
+  61:../timer.c    **** 	rTCON |= (0x1<<3);
+ 2779              		.loc 1 61 0
+ 2780 0138 6C309FE5 		ldr	r3, .L2+64
+ 2781 013c 68209FE5 		ldr	r2, .L2+64
+ 2782 0140 002092E5 		ldr	r2, [r2, #0]
+ 2783 0144 082082E3 		orr	r2, r2, #8
+ 2784 0148 002083E5 		str	r2, [r3, #0]
+  62:../timer.c    **** 	rTCON |= (0x1<<0);
+ 2785              		.loc 1 62 0
+ 2786 014c 58309FE5 		ldr	r3, .L2+64
+ 2787 0150 54209FE5 		ldr	r2, .L2+64
+ 2788 0154 002092E5 		ldr	r2, [r2, #0]
+ 2789 0158 012082E3 		orr	r2, r2, #1
+ 2790 015c 002083E5 		str	r2, [r3, #0]
+  63:../timer.c    **** }
+ 2791              		.loc 1 63 0
+ 2792 0160 0CD04BE2 		sub	sp, fp, #12
+ 2793 0164 00689DE8 		ldmfd	sp, {fp, sp, lr}
+ 2794 0168 1EFF2FE1 		bx	lr
+ 2795              	.L3:
+ 2796              		.align	2
+ 2797              	.L2:
+ 2798 016c 0800E001 		.word	31457288
+ 2799 0170 0C00E001 		.word	31457292
+ 2800 0174 54FF7F0C 		.word	209715028
+ 2801 0178 00000000 		.word	timer_ISR
+ 2802 017c 50FF7F0C 		.word	209715024
+ 2803 0180 4CFF7F0C 		.word	209715020
+ 2804 0184 0000D501 		.word	30736384
+ 2805 0188 40FF0000 		.word	65344
+ 2806 018c 0400D501 		.word	30736388
+ 2807 0190 0C00D501 		.word	30736396
+ 2808 0194 FFFF0000 		.word	65535
+ 2809 0198 1800D501 		.word	30736408
+ 2810 019c 2400D501 		.word	30736420
+ 2811 01a0 1000D501 		.word	30736400
+ 2812 01a4 1C00D501 		.word	30736412
+ 2813 01a8 2800D501 		.word	30736424
+ 2814 01ac 0800D501 		.word	30736392
+ 2815              		.cfi_endproc
+ 2816              	.LFE0:
+ 2818              		.align	2
+ 2819              		.global	timer_ISR
+ 2821              	timer_ISR:
+ 2822              	.LFB1:
+  64:../timer.c    **** 
+  65:../timer.c    **** void timer_ISR(void){
+ 2823              		.loc 1 65 0
+ 2824              		.cfi_startproc
+ 2825              		@ Interrupt Service Routine.
+ 2826              		@ args = 0, pretend = 0, frame = 8
+ 2827              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2828 01b0 04C02DE5 		str	ip, [sp, #-4]!
+ 2829 01b4 0DC0A0E1 		mov	ip, sp
+ 2830              	.LCFI2:
+ 2831              		.cfi_def_cfa_register 12
+ 2832 01b8 0FD82DE9 		stmfd	sp!, {r0, r1, r2, r3, fp, ip, lr, pc}
+ 2833 01bc 04B04CE2 		sub	fp, ip, #4
+ 2834              		.cfi_offset 14, -8
+ 2835              		.cfi_offset 13, -12
+ 2836              		.cfi_offset 11, -16
+ 2837              		.cfi_offset 3, -20
+ 2838              		.cfi_offset 2, -24
+ 2839              		.cfi_offset 1, -28
+ 2840              		.cfi_offset 0, -32
+ 2841              	.LCFI3:
+ 2842              		.cfi_def_cfa 11, 4
+ 2843 01c0 08D04DE2 		sub	sp, sp, #8
+  66:../timer.c    **** 	if ( ((rI_ISPR & BIT_TIMER0)!=0)){
+ 2844              		.loc 1 66 0
+ 2845 01c4 CC309FE5 		ldr	r3, .L11
+ 2846 01c8 003093E5 		ldr	r3, [r3, #0]
+ 2847 01cc 023A03E2 		and	r3, r3, #8192
+ 2848 01d0 000053E3 		cmp	r3, #0
+ 2849 01d4 1900000A 		beq	.L5
+ 2850              	.LBB2:
+  67:../timer.c    **** 		int aux = key_read();
+ 2851              		.loc 1 67 0
+ 2852 01d8 FEFFFFEB 		bl	key_read
+ 2853 01dc 20000BE5 		str	r0, [fp, #-32]
+  68:../timer.c    **** 
+  69:../timer.c    **** 		if (aux == 1)
+ 2854              		.loc 1 69 0
+ 2855 01e0 20301BE5 		ldr	r3, [fp, #-32]
+ 2856 01e4 010053E3 		cmp	r3, #1
+ 2857 01e8 0000001A 		bne	.L6
+  70:../timer.c    **** 			movePlayerUp();
+ 2858              		.loc 1 70 0
+ 2859 01ec FEFFFFEB 		bl	movePlayerUp
+ 2860              	.L6:
+  71:../timer.c    **** 		if (aux == 4)
+ 2861              		.loc 1 71 0
+ 2862 01f0 20301BE5 		ldr	r3, [fp, #-32]
+ 2863 01f4 040053E3 		cmp	r3, #4
+ 2864 01f8 0000001A 		bne	.L7
+  72:../timer.c    **** 			movePlayerLeft();
+ 2865              		.loc 1 72 0
+ 2866 01fc FEFFFFEB 		bl	movePlayerLeft
+ 2867              	.L7:
+  73:../timer.c    **** 		if (aux == 5)
+ 2868              		.loc 1 73 0
+ 2869 0200 20301BE5 		ldr	r3, [fp, #-32]
+ 2870 0204 050053E3 		cmp	r3, #5
+ 2871 0208 0000001A 		bne	.L8
+  74:../timer.c    **** 			movePlayerDown();
+ 2872              		.loc 1 74 0
+ 2873 020c FEFFFFEB 		bl	movePlayerDown
+ 2874              	.L8:
+  75:../timer.c    **** 		if (aux == 6)
+ 2875              		.loc 1 75 0
+ 2876 0210 20301BE5 		ldr	r3, [fp, #-32]
+ 2877 0214 060053E3 		cmp	r3, #6
+ 2878 0218 0000001A 		bne	.L9
+  76:../timer.c    **** 			movePlayerRight();
+ 2879              		.loc 1 76 0
+ 2880 021c FEFFFFEB 		bl	movePlayerRight
+ 2881              	.L9:
+  77:../timer.c    **** 
+  78:../timer.c    **** 		redrawChanging();
+ 2882              		.loc 1 78 0
+ 2883 0220 FEFFFFEB 		bl	redrawChanging
+  79:../timer.c    **** 
+  80:../timer.c    **** 		checkWinGame();
+ 2884              		.loc 1 80 0
+ 2885 0224 FEFFFFEB 		bl	checkWinGame
+  81:../timer.c    **** 
+  82:../timer.c    **** 		D8Led_symbol(aux);
+ 2886              		.loc 1 82 0
+ 2887 0228 20001BE5 		ldr	r0, [fp, #-32]
+ 2888 022c FEFFFFEB 		bl	D8Led_symbol
+  83:../timer.c    **** 		ledsToggle();
+ 2889              		.loc 1 83 0
+ 2890 0230 FEFFFFEB 		bl	ledsToggle
+  84:../timer.c    **** 
+  85:../timer.c    **** 		rI_ISPC = BIT_TIMER0;
+ 2891              		.loc 1 85 0
+ 2892 0234 60309FE5 		ldr	r3, .L11+4
+ 2893 0238 022AA0E3 		mov	r2, #8192
+ 2894 023c 002083E5 		str	r2, [r3, #0]
+ 2895              	.L5:
+ 2896              	.LBE2:
+  86:../timer.c    **** 	}
+  87:../timer.c    **** 
+  88:../timer.c    **** 
+  89:../timer.c    **** 	if ( ((rI_ISPR & BIT_TIMER2)!=0)){
+ 2897              		.loc 1 89 0
+ 2898 0240 50309FE5 		ldr	r3, .L11
+ 2899 0244 003093E5 		ldr	r3, [r3, #0]
+ 2900 0248 023B03E2 		and	r3, r3, #2048
+ 2901 024c 000053E3 		cmp	r3, #0
+ 2902 0250 0900000A 		beq	.L10
+  90:../timer.c    **** 		rTCON &= ~(0x1<<12);
+ 2903              		.loc 1 90 0
+ 2904 0254 44309FE5 		ldr	r3, .L11+8
+ 2905 0258 40209FE5 		ldr	r2, .L11+8
+ 2906 025c 002092E5 		ldr	r2, [r2, #0]
+ 2907 0260 012AC2E3 		bic	r2, r2, #4096
+ 2908 0264 002083E5 		str	r2, [r3, #0]
+  91:../timer.c    **** 		boomBomb(0);
+ 2909              		.loc 1 91 0
+ 2910 0268 0000A0E3 		mov	r0, #0
+ 2911 026c FEFFFFEB 		bl	boomBomb
+  92:../timer.c    **** 		rI_ISPC = BIT_TIMER2;
+ 2912              		.loc 1 92 0
+ 2913 0270 24309FE5 		ldr	r3, .L11+4
+ 2914 0274 022BA0E3 		mov	r2, #2048
+ 2915 0278 002083E5 		str	r2, [r3, #0]
+ 2916              	.L10:
+  93:../timer.c    **** 	}
+  94:../timer.c    **** 
+  95:../timer.c    **** 	rI_ISPC = BIT_TIMER1;
+ 2917              		.loc 1 95 0
+ 2918 027c 18309FE5 		ldr	r3, .L11+4
+ 2919 0280 012AA0E3 		mov	r2, #4096
+ 2920 0284 002083E5 		str	r2, [r3, #0]
+  96:../timer.c    **** }
+ 2921              		.loc 1 96 0
+ 2922 0288 1CD04BE2 		sub	sp, fp, #28
+ 2923 028c 0F689DE8 		ldmfd	sp, {r0, r1, r2, r3, fp, sp, lr}
+ 2924 0290 04C09DE4 		ldmfd	sp!, {ip}
+ 2925 0294 04F05EE2 		subs	pc, lr, #4
+ 2926              	.L12:
+ 2927              		.align	2
+ 2928              	.L11:
+ 2929 0298 2000E001 		.word	31457312
+ 2930 029c 2400E001 		.word	31457316
+ 2931 02a0 0800D501 		.word	30736392
+ 2932              		.cfi_endproc
+ 2933              	.LFE1:
+ 2935              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 timer.c
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2665   .text:00000000 $a
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2668   .text:00000000 timer_init
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2798   .text:0000016c $d
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2821   .text:000001b0 timer_ISR
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2818   .text:000001b0 $a
+C:\Users\USUARI~1\AppData\Local\Temp\cc76xRwm.s:2929   .text:00000298 $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+key_read
+movePlayerUp
+movePlayerLeft
+movePlayerDown
+movePlayerRight
+redrawChanging
+checkWinGame
+D8Led_symbol
+ledsToggle
+boomBomb

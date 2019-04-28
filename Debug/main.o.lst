@@ -1,0 +1,315 @@
+   1              		.cpu arm7tdmi
+   2              		.fpu softvfp
+   3              		.eabi_attribute 20, 1
+   4              		.eabi_attribute 21, 1
+   5              		.eabi_attribute 23, 3
+   6              		.eabi_attribute 24, 1
+   7              		.eabi_attribute 25, 1
+   8              		.eabi_attribute 26, 1
+   9              		.eabi_attribute 30, 6
+  10              		.eabi_attribute 18, 4
+  11              		.file	"main.c"
+  21              	.Ltext0:
+  22              		.file 1 "../main.c"
+ 2665              		.align	2
+ 2668              	NCOL:
+ 2669 0000 03000000 		.word	3
+ 2670              		.comm	str,1,4
+ 2671              		.comm	tablero,36,4
+ 2672              		.text
+ 2673              		.align	2
+ 2674              		.global	Main
+ 2676              	Main:
+ 2677              	.LFB0:
+   1:../main.c     **** /*--- ficheros de cabecera ---*/
+   2:../main.c     **** #include "44blib.h"
+   3:../main.c     **** #include "44b.h"
+   4:../main.c     **** #include "uart.h"
+   5:../main.c     **** #include "visualizacion.h"
+   6:../main.c     **** #include "playerMovement.h"
+   7:../main.c     **** 
+   8:../main.c     **** extern void keyboard_init();
+   9:../main.c     **** 
+  10:../main.c     **** int empezar; // Si el maletín ha pulsado el botón
+  11:../main.c     **** int empezarOtro;
+  12:../main.c     **** 
+  13:../main.c     **** int turno;
+  14:../main.c     **** 
+  15:../main.c     **** const int NCOL = 3;
+  16:../main.c     **** 
+  17:../main.c     **** char str[1];
+  18:../main.c     **** int tablero[9]; // 0 vacío, 1 el primer jugador, 2 el segundo jugador
+  19:../main.c     **** 
+  20:../main.c     **** 
+  21:../main.c     **** /*--- declaracion de funciones ---*/
+  22:../main.c     **** int Main(void);
+  23:../main.c     **** 
+  24:../main.c     **** int Main(void){
+ 2678              		.loc 1 24 0
+ 2679              		.cfi_startproc
+ 2680              		@ Function supports interworking.
+ 2681              		@ args = 0, pretend = 0, frame = 24
+ 2682              		@ frame_needed = 1, uses_anonymous_args = 0
+ 2683 0000 0DC0A0E1 		mov	ip, sp
+ 2684              	.LCFI0:
+ 2685              		.cfi_def_cfa_register 12
+ 2686 0004 00D82DE9 		stmfd	sp!, {fp, ip, lr, pc}
+ 2687 0008 04B04CE2 		sub	fp, ip, #4
+ 2688              		.cfi_offset 14, -8
+ 2689              		.cfi_offset 13, -12
+ 2690              		.cfi_offset 11, -16
+ 2691              	.LCFI1:
+ 2692              		.cfi_def_cfa 11, 4
+ 2693 000c 18D04DE2 		sub	sp, sp, #24
+  25:../main.c     **** 
+  26:../main.c     **** 	int i;
+  27:../main.c     **** 	//Inicializamos el tablero:
+  28:../main.c     **** 	for ( i = 0; i < NCOL*NCOL; i++){
+ 2694              		.loc 1 28 0
+ 2695 0010 0030A0E3 		mov	r3, #0
+ 2696 0014 10300BE5 		str	r3, [fp, #-16]
+ 2697 0018 060000EA 		b	.L2
+ 2698              	.L3:
+  29:../main.c     **** 		tablero[i] = 0;
+ 2699              		.loc 1 29 0 discriminator 2
+ 2700 001c 88319FE5 		ldr	r3, .L9
+ 2701 0020 10201BE5 		ldr	r2, [fp, #-16]
+ 2702 0024 0010A0E3 		mov	r1, #0
+ 2703 0028 021183E7 		str	r1, [r3, r2, asl #2]
+  28:../main.c     **** 	for ( i = 0; i < NCOL*NCOL; i++){
+ 2704              		.loc 1 28 0 discriminator 2
+ 2705 002c 10301BE5 		ldr	r3, [fp, #-16]
+ 2706 0030 013083E2 		add	r3, r3, #1
+ 2707 0034 10300BE5 		str	r3, [fp, #-16]
+ 2708              	.L2:
+  28:../main.c     **** 	for ( i = 0; i < NCOL*NCOL; i++){
+ 2709              		.loc 1 28 0 is_stmt 0 discriminator 1
+ 2710 0038 70319FE5 		ldr	r3, .L9+4
+ 2711 003c 003093E5 		ldr	r3, [r3, #0]
+ 2712 0040 68219FE5 		ldr	r2, .L9+4
+ 2713 0044 002092E5 		ldr	r2, [r2, #0]
+ 2714 0048 930202E0 		mul	r2, r3, r2
+ 2715 004c 10301BE5 		ldr	r3, [fp, #-16]
+ 2716 0050 030052E1 		cmp	r2, r3
+ 2717 0054 F0FFFFCA 		bgt	.L3
+  30:../main.c     **** 	}
+  31:../main.c     **** 
+  32:../main.c     **** 	empezar = 0;
+ 2718              		.loc 1 32 0 is_stmt 1
+ 2719 0058 54319FE5 		ldr	r3, .L9+8
+ 2720 005c 0020A0E3 		mov	r2, #0
+ 2721 0060 002083E5 		str	r2, [r3, #0]
+  33:../main.c     **** 	turno = 1;
+ 2722              		.loc 1 33 0
+ 2723 0064 4C319FE5 		ldr	r3, .L9+12
+ 2724 0068 0120A0E3 		mov	r2, #1
+ 2725 006c 002083E5 		str	r2, [r3, #0]
+  34:../main.c     **** 	empezarOtro = 0;
+ 2726              		.loc 1 34 0
+ 2727 0070 44319FE5 		ldr	r3, .L9+16
+ 2728 0074 0020A0E3 		mov	r2, #0
+ 2729 0078 002083E5 		str	r2, [r3, #0]
+  35:../main.c     **** 
+  36:../main.c     **** 	sys_init(); // inicializacion de la placa, interrupciones, puertos
+ 2730              		.loc 1 36 0
+ 2731 007c FEFFFFEB 		bl	sys_init
+  37:../main.c     **** 	//friedSeed = -1;
+  38:../main.c     **** 	Uart_Init(115200); // inicializacion de la Uart
+ 2732              		.loc 1 38 0
+ 2733 0080 38019FE5 		ldr	r0, .L9+20
+ 2734 0084 FEFFFFEB 		bl	Uart_Init
+  39:../main.c     **** 	keyboard_init();
+ 2735              		.loc 1 39 0
+ 2736 0088 FEFFFFEB 		bl	keyboard_init
+  40:../main.c     **** 	Eint4567_init();
+ 2737              		.loc 1 40 0
+ 2738 008c FEFFFFEB 		bl	Eint4567_init
+  41:../main.c     **** 
+  42:../main.c     **** 	init_visualizacion();
+ 2739              		.loc 1 42 0
+ 2740 0090 FEFFFFEB 		bl	init_visualizacion
+  43:../main.c     **** 	init_welcome3R();
+ 2741              		.loc 1 43 0
+ 2742 0094 FEFFFFEB 		bl	init_welcome3R
+  44:../main.c     **** 
+  45:../main.c     **** 	int emp = 0;
+ 2743              		.loc 1 45 0
+ 2744 0098 0030A0E3 		mov	r3, #0
+ 2745 009c 18300BE5 		str	r3, [fp, #-24]
+  46:../main.c     **** 	int empO = 0;
+ 2746              		.loc 1 46 0
+ 2747 00a0 0030A0E3 		mov	r3, #0
+ 2748 00a4 1C300BE5 		str	r3, [fp, #-28]
+  47:../main.c     **** 
+  48:../main.c     **** 	char *pt_str = str;
+ 2749              		.loc 1 48 0
+ 2750 00a8 14319FE5 		ldr	r3, .L9+24
+ 2751 00ac 14300BE5 		str	r3, [fp, #-20]
+  49:../main.c     **** 
+  50:../main.c     **** 	/*while(empezar == 0 || empezarOtro == 0){
+  51:../main.c     **** 		emp = empezar;
+  52:../main.c     **** 		*pt_str = Uart1_Getch();
+  53:../main.c     **** 		if(*pt_str == 'a'){
+  54:../main.c     **** 			empezarOtro =1;
+  55:../main.c     **** 			empO=1;
+  56:../main.c     **** 		}
+  57:../main.c     **** 		pt_str = str;
+  58:../main.c     **** 	}
+  59:../main.c     **** */
+  60:../main.c     **** 	lcd_clear();
+ 2752              		.loc 1 60 0
+ 2753 00b0 FEFFFFEB 		bl	lcd_clear
+  61:../main.c     **** 	drawTab();
+ 2754              		.loc 1 61 0
+ 2755 00b4 FEFFFFEB 		bl	drawTab
+ 2756              	.L8:
+  62:../main.c     **** 
+  63:../main.c     **** 	while(1){
+  64:../main.c     **** 		*pt_str = Uart1_Getch(); // leer caracter
+ 2757              		.loc 1 64 0
+ 2758 00b8 FEFFFFEB 		bl	Uart1_Getch
+ 2759 00bc 0030A0E1 		mov	r3, r0
+ 2760 00c0 0320A0E1 		mov	r2, r3
+ 2761 00c4 14301BE5 		ldr	r3, [fp, #-20]
+ 2762 00c8 0020C3E5 		strb	r2, [r3, #0]
+  65:../main.c     **** 		if (*pt_str >= 0 && *pt_str < NCOL*NCOL){
+ 2763              		.loc 1 65 0
+ 2764 00cc 14301BE5 		ldr	r3, [fp, #-20]
+ 2765 00d0 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2766 00d4 0320A0E1 		mov	r2, r3
+ 2767 00d8 D0309FE5 		ldr	r3, .L9+4
+ 2768 00dc 003093E5 		ldr	r3, [r3, #0]
+ 2769 00e0 C8109FE5 		ldr	r1, .L9+4
+ 2770 00e4 001091E5 		ldr	r1, [r1, #0]
+ 2771 00e8 910303E0 		mul	r3, r1, r3
+ 2772 00ec 030052E1 		cmp	r2, r3
+ 2773 00f0 2A0000AA 		bge	.L4
+ 2774              	.LBB2:
+  66:../main.c     **** 			D8Led_symbol(*pt_str);
+ 2775              		.loc 1 66 0
+ 2776 00f4 14301BE5 		ldr	r3, [fp, #-20]
+ 2777 00f8 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2778 00fc 0300A0E1 		mov	r0, r3
+ 2779 0100 FEFFFFEB 		bl	D8Led_symbol
+  67:../main.c     **** 			tablero[*pt_str] = (turno % 2) +1;
+ 2780              		.loc 1 67 0
+ 2781 0104 14301BE5 		ldr	r3, [fp, #-20]
+ 2782 0108 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2783 010c 0310A0E1 		mov	r1, r3
+ 2784 0110 A0309FE5 		ldr	r3, .L9+12
+ 2785 0114 002093E5 		ldr	r2, [r3, #0]
+ 2786 0118 C23FA0E1 		mov	r3, r2, asr #31
+ 2787 011c A33FA0E1 		mov	r3, r3, lsr #31
+ 2788 0120 032082E0 		add	r2, r2, r3
+ 2789 0124 012002E2 		and	r2, r2, #1
+ 2790 0128 023063E0 		rsb	r3, r3, r2
+ 2791 012c 012083E2 		add	r2, r3, #1
+ 2792 0130 74309FE5 		ldr	r3, .L9
+ 2793 0134 012183E7 		str	r2, [r3, r1, asl #2]
+  68:../main.c     **** 			if (turno % 2 == 0){
+ 2794              		.loc 1 68 0
+ 2795 0138 78309FE5 		ldr	r3, .L9+12
+ 2796 013c 003093E5 		ldr	r3, [r3, #0]
+ 2797 0140 013003E2 		and	r3, r3, #1
+ 2798 0144 000053E3 		cmp	r3, #0
+ 2799 0148 0400001A 		bne	.L5
+ 2800              	.LBB3:
+  69:../main.c     **** 				drawX(*pt_str);
+ 2801              		.loc 1 69 0
+ 2802 014c 14301BE5 		ldr	r3, [fp, #-20]
+ 2803 0150 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2804 0154 0300A0E1 		mov	r0, r3
+ 2805 0158 FEFFFFEB 		bl	drawX
+ 2806 015c 030000EA 		b	.L6
+ 2807              	.L5:
+ 2808              	.LBE3:
+ 2809              	.LBB4:
+  70:../main.c     **** 			}
+  71:../main.c     **** 			else {
+  72:../main.c     **** 				drawO(*pt_str);
+ 2810              		.loc 1 72 0
+ 2811 0160 14301BE5 		ldr	r3, [fp, #-20]
+ 2812 0164 0030D3E5 		ldrb	r3, [r3, #0]	@ zero_extendqisi2
+ 2813 0168 0300A0E1 		mov	r0, r3
+ 2814 016c FEFFFFEB 		bl	drawO
+ 2815              	.L6:
+ 2816              	.LBE4:
+  73:../main.c     **** 			}
+  74:../main.c     **** 			int fin = comprobarFinDelJuego();
+ 2817              		.loc 1 74 0
+ 2818 0170 FEFFFFEB 		bl	comprobarFinDelJuego
+ 2819 0174 20000BE5 		str	r0, [fp, #-32]
+  75:../main.c     **** 
+  76:../main.c     **** 			if(fin != 0){
+ 2820              		.loc 1 76 0
+ 2821 0178 20301BE5 		ldr	r3, [fp, #-32]
+ 2822 017c 000053E3 		cmp	r3, #0
+ 2823 0180 0100000A 		beq	.L7
+ 2824              	.LBB5:
+  77:../main.c     **** 				drawFin(fin);
+ 2825              		.loc 1 77 0
+ 2826 0184 20001BE5 		ldr	r0, [fp, #-32]
+ 2827 0188 FEFFFFEB 		bl	drawFin
+ 2828              	.L7:
+ 2829              	.LBE5:
+  78:../main.c     **** 			}
+  79:../main.c     **** 			turno++;
+ 2830              		.loc 1 79 0
+ 2831 018c 24309FE5 		ldr	r3, .L9+12
+ 2832 0190 003093E5 		ldr	r3, [r3, #0]
+ 2833 0194 012083E2 		add	r2, r3, #1
+ 2834 0198 18309FE5 		ldr	r3, .L9+12
+ 2835 019c 002083E5 		str	r2, [r3, #0]
+ 2836              	.L4:
+ 2837              	.LBE2:
+  80:../main.c     **** 
+  81:../main.c     **** 		}
+  82:../main.c     **** 		pt_str = str;
+ 2838              		.loc 1 82 0
+ 2839 01a0 1C309FE5 		ldr	r3, .L9+24
+ 2840 01a4 14300BE5 		str	r3, [fp, #-20]
+  83:../main.c     **** 	}
+ 2841              		.loc 1 83 0
+ 2842 01a8 C2FFFFEA 		b	.L8
+ 2843              	.L10:
+ 2844              		.align	2
+ 2845              	.L9:
+ 2846 01ac 00000000 		.word	tablero
+ 2847 01b0 00000000 		.word	NCOL
+ 2848 01b4 00000000 		.word	empezar
+ 2849 01b8 00000000 		.word	turno
+ 2850 01bc 00000000 		.word	empezarOtro
+ 2851 01c0 00C20100 		.word	115200
+ 2852 01c4 00000000 		.word	str
+ 2853              		.cfi_endproc
+ 2854              	.LFE0:
+ 2856              	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 main.c
+                            *COM*:00000004 empezar
+                            *COM*:00000004 empezarOtro
+                            *COM*:00000004 turno
+C:\Users\Paloma\AppData\Local\Temp\cc29ypNh.s:2668   .rodata:00000000 NCOL
+C:\Users\Paloma\AppData\Local\Temp\cc29ypNh.s:2665   .rodata:00000000 $d
+                            *COM*:00000001 str
+                            *COM*:00000024 tablero
+C:\Users\Paloma\AppData\Local\Temp\cc29ypNh.s:2673   .text:00000000 $a
+C:\Users\Paloma\AppData\Local\Temp\cc29ypNh.s:2676   .text:00000000 Main
+C:\Users\Paloma\AppData\Local\Temp\cc29ypNh.s:2846   .text:000001ac $d
+                     .debug_frame:00000010 $d
+
+UNDEFINED SYMBOLS
+sys_init
+Uart_Init
+keyboard_init
+Eint4567_init
+init_visualizacion
+init_welcome3R
+lcd_clear
+drawTab
+Uart1_Getch
+D8Led_symbol
+drawX
+drawO
+comprobarFinDelJuego
+drawFin
