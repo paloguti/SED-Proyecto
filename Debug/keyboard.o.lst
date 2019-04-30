@@ -732,26 +732,26 @@
  3274              	.Letext0:
 DEFINED SYMBOLS
                             *ABS*:00000000 keyboard.c
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2733   .data:00000000 keyboard_base
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2730   .data:00000000 $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2733   .data:00000000 keyboard_base
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2730   .data:00000000 $d
                             *COM*:00000004 key
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2737   .text:00000000 $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2740   .text:00000000 keyboard_init
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2804   .text:00000094 $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2819   .text:000000b8 KeyboardInt
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:2816   .text:000000b8 $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3063   .text:00000344 key_read
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3051   .text:0000032c $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3060   .text:00000344 $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3099   .text:0000038c $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3109   .text:000003ac $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3143   .text:0000040c $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3153   .text:0000042c $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3187   .text:0000048c $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3197   .text:000004ac $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3231   .text:0000050c $d
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3241   .text:0000052c $a
-C:\Users\Paloma\AppData\Local\Temp\cc1x5ueL.s:3270   .text:00000570 $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2737   .text:00000000 $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2740   .text:00000000 keyboard_init
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2804   .text:00000094 $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2819   .text:000000b8 KeyboardInt
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:2816   .text:000000b8 $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3063   .text:00000344 key_read
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3051   .text:0000032c $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3060   .text:00000344 $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3099   .text:0000038c $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3109   .text:000003ac $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3143   .text:0000040c $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3153   .text:0000042c $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3187   .text:0000048c $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3197   .text:000004ac $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3231   .text:0000050c $d
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3241   .text:0000052c $a
+C:\Users\Paloma\AppData\Local\Temp\ccMfumn3.s:3270   .text:00000570 $d
                      .debug_frame:00000010 $d
 
 UNDEFINED SYMBOLS

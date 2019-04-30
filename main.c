@@ -32,6 +32,7 @@ int Main(void){
 	empezar = 0;
 	turno = 1;
 	empezarOtro = 0;
+	int fin = 0;
 
 	sys_init(); // inicializacion de la placa, interrupciones, puertos
 	//friedSeed = -1;
@@ -60,21 +61,25 @@ int Main(void){
 	lcd_clear();
 	drawTab();
 
-	while(1){
+	while(fin == 0){
 		*pt_str = Uart1_Getch(); // leer caracter
+		if(*pt_str == 'f'){
+			break;
+		}
 		if (*pt_str >= 0 && *pt_str < NCOL*NCOL){
 			D8Led_symbol(*pt_str);
 			tablero[*pt_str] = (turno % 2) +1;
 			if (turno % 2 == 0){
-				drawX(*pt_str);
-			}
-			else {
 				drawO(*pt_str);
 			}
-			int fin = comprobarFinDelJuego();
+			else {
+				drawX(*pt_str);
+			}
+			fin = comprobarFinDelJuego();
 
 			if(fin != 0){
 				drawFin(fin);
+				Uart1_SendByte('f');
 			}
 			turno++;
 

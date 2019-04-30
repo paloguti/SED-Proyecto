@@ -9,7 +9,6 @@ C_SRCS += \
 ../gameLogic.c \
 ../keyboard.c \
 ../lcd.c \
-../led.c \
 ../main.c \
 ../uart.c \
 ../visualizacion.c 
@@ -20,7 +19,6 @@ OBJS += \
 ./gameLogic.o \
 ./keyboard.o \
 ./lcd.o \
-./led.o \
 ./main.o \
 ./uart.o \
 ./visualizacion.o 
@@ -31,7 +29,6 @@ C_DEPS += \
 ./gameLogic.d \
 ./keyboard.d \
 ./lcd.d \
-./led.d \
 ./main.d \
 ./uart.d \
 ./visualizacion.d 

@@ -106,6 +106,7 @@ void KeyboardInt(void)
 
 		if(fin != 0){
 			drawFin(fin);
+			Uart1_SendByte('f');
 		}
 
 
