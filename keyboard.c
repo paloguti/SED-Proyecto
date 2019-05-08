@@ -78,7 +78,7 @@ void KeyboardInt(void)
 	DelayMs(100);
 	/* Identificar la tecla */
 	key = 15;
-	while (key > NCOL*NCOL || tablero[key] != 0 ){ // es como que deshabilitamos el resto de teclas...
+	while (key >= NCOL*NCOL || tablero[key] != 0 || key == -1 ){ // es como que deshabilitamos el resto de teclas...
 		key = key_read();
 		int aux2 = tablero[key];
 		DelayMs(1);
